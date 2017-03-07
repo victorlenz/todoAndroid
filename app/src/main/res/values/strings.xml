@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Todo</string>
+    <string name="google_OAuth_key">481842597987-ei9pg4t6lrikhrv8s10qfti183tvpp7h.apps.googleusercontent.com </string>
 </resources>
