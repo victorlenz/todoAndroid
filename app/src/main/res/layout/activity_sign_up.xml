@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="78dp"
             android:id="@+id/button_signIn"
-            android:background="#6563a4"
+            android:background="@drawable/button"
             android:gravity="center"
             style="@style/Widget.AppCompat.Button.Borderless" />
     </LinearLayout>
