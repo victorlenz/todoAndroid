@@ -13,6 +13,8 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:titleTextColor="#FFF"
         app:titleTextColor="#FFF"
+        app:title="@string/app_name"
+
         />
 
 </LinearLayout>
