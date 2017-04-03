@@ -2,6 +2,7 @@ package com.alwayzcurious.todo;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -28,18 +29,21 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignUp extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener{
 
     Button signIn;
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
-
+    SharedPreferences sharedPreferences;
     ProgressDialog dialog;
-
-
-
     private FirebaseAuth mAuth;
+    public static String APP_SHARED_PREFERENCES = "event-reminder";
     // [END declare_auth]
 
     // [START declare_auth_listener]
@@ -53,13 +57,19 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        sharedPreferences = getSharedPreferences(APP_SHARED_PREFERENCES,MODE_PRIVATE);
         signIn = (Button) findViewById(R.id.button_signIn);
-        //signIn.setOnClickListener(this);
+        signIn.setOnClickListener(this);
 
+        if(sharedPreferences.getBoolean("is_signed_in",false)){
+            startActivity(new Intent(this,Profile.class));
+            finish();
+        }
 
         dialog = new ProgressDialog(this);
         dialog.setMessage("Retrieving latest announcements...");
         dialog.setIndeterminate(true);
+
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -83,6 +93,8 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+
+
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -134,7 +146,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
         }
     }
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+    private void firebaseAuthWithGoogle(final GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         // [START_EXCLUDE silent]
         showProgressDialog("Starting...");
@@ -154,6 +166,34 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
                             Log.w(TAG, "signInWithCredential", task.getException());
                             Toast.makeText(SignUp.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                        }else {
+
+                            StaticInformation.FIREBASE_UID = task.getResult().getUser().getUid();
+                            StaticInformation.USERNAME=task.getResult().getUser().getDisplayName();
+
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+                            Map<String, String> data = new HashMap<String, String>();
+                            data.put("user_name",acct.getDisplayName());
+                            data.put("email",acct.getEmail());
+                            data.put("image",acct.getPhotoUrl().toString());
+                            data.put("birthday","NA");
+                            databaseReference.child("users/"+task.getResult().getUser().getUid()).setValue(data);
+
+                            sharedPreferences.edit()
+                                    .putBoolean("is_signed_in",true)
+                                    .putString("id",task.getResult().getUser().getUid())
+                                    .putString("name",acct.getDisplayName())
+                                    .putString("email",acct.getEmail())
+                                    .putString("birthday","NA")
+                                    .apply();
+
+                            Intent t = new Intent(getApplicationContext(),Profile.class)
+                                    .putExtra("name",acct.getDisplayName())
+                                    .putExtra("image",acct.getPhotoUrl().toString());
+                            startActivity(t);
+                            finish();
+
                         }
                         // [START_EXCLUDE]
                       hideProgressDialog();

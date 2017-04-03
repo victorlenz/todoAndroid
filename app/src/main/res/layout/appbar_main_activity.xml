@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="10"
+    android:background="#fff">
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_options"
+        android:id="@+id/imageView2"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"/>
+
+
+
+
+    <com.alwayzcurious.todo.Extras.FontTextView
+        android:text="ToDo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:textSize="27sp"
+        android:layout_gravity="center_vertical"
+      android:layout_weight="7"
+        />
+
+        <com.alwayzcurious.todo.Extras.FontTextView
+            android:layout_width="34dp"
+            android:layout_height="wrap_content"
+            android:text="15~C"
+            android:textSize="17sp"
+            android:layout_gravity="center_vertical"
+            android:gravity="left"
+
+            android:layout_weight="1.03" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="31dp"
+            android:layout_height="34dp"
+            android:src="@color/colorAccent"
+            android:layout_gravity="center_vertical"
+            android:foregroundGravity="left"
+            android:layout_weight="1"
+         />
+
+
+</LinearLayout>

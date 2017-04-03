@@ -11,7 +11,7 @@
     tools:context="com.alwayzcurious.todo.SignUp"
     android:background="@drawable/background_sign_in">
 
-    <TextView
+    <com.alwayzcurious.todo.Extras.FontTextView
         android:text="Get Started"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,14 +51,17 @@
         >
 
 
-        <Button
-            android:text="sign in with google"
+        <com.alwayzcurious.todo.Extras.FontButton1
+            android:text="Sign in with Google"
             android:layout_width="match_parent"
             android:layout_height="78dp"
             android:id="@+id/button_signIn"
             android:background="@drawable/button"
             android:gravity="center"
-            style="@style/Widget.AppCompat.Button.Borderless" />
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:textAllCaps="false"
+            android:textColor="#fff"
+            android:textSize="20sp" />
     </LinearLayout>
 
 

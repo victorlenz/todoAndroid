@@ -17,7 +17,7 @@ public class TypefaceSpan extends MetricAffectingSpan {
     private static LruCache<String, Typeface> sTypefaceCache =
             new LruCache<String, Typeface>(12);
 
-    private Typeface mTypeface;
+    public static Typeface mTypeface;
 
     /**
      * Load the {@link Typeface} and apply to a {@link Spannable}.
@@ -27,7 +27,7 @@ public class TypefaceSpan extends MetricAffectingSpan {
 
         if (mTypeface == null) {
             mTypeface = Typeface.createFromAsset(context.getApplicationContext()
-                    .getAssets(), String.format("fonts/%s", typefaceName));
+                    .getAssets(), String.format("font/%s", typefaceName));
 
             // Cache the loaded Typeface
             sTypefaceCache.put(typefaceName, mTypeface);

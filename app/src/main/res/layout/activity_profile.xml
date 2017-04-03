@@ -5,7 +5,8 @@
     android:id="@+id/activity_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.alwayzcurious.todo.Profile">
+    tools:context="com.alwayzcurious.todo.Profile"
+    android:background="#fff">
 
     <include layout="@layout/appbar"
         android:id="@+id/include"/>
@@ -21,15 +22,31 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
-            android:layout_width="175dp"
+            android:layout_width="match_parent"
             android:layout_height="175dp"
-            android:src="@mipmap/ic_add_image"
-            app:civ_border_width="1dp"
-            app:civ_border_color="#1edabb"
-
+            android:src="@drawable/ic_add_image"
+            app:civ_border_width="2dp"
+            app:civ_border_color="#ffffff"
             android:scaleType="centerCrop"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <com.alwayzcurious.todo.Extras.FontButton1
+            android:text="+"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonChangeProfileImage"
+            android:background="@drawable/button_circular"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:layout_marginRight="80dp"
+            android:layout_marginEnd="80dp"
+            android:layout_alignBottom="@+id/profile_image"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="13dp" />
+
 
     </RelativeLayout>
 
@@ -37,19 +54,62 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_below="@+id/relativeLayout"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+         android:layout_margin="10dp">
+
+
+        <com.alwayzcurious.todo.Extras.FontTextView
+            android:text="Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView3"
+            android:layout_weight="1" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
-            android:text="Name"
-            android:id="@+id/editText"
+            android:ems="10"
+            android:id="@+id/editTextView_name"
+            android:layout_weight="1" />
+
+        <com.alwayzcurious.todo.Extras.FontTextView
+            android:text="Birthday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView4"
+            android:layout_weight="1" />
+
+        <com.alwayzcurious.todo.Extras.FontTextView
+            android:text="TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewDOB"
+            android:layout_marginTop="20dp"
+            android:textSize="40sp"
             tools:ignore="HardcodedText" />
+
+
     </LinearLayout>
+
+    <com.alwayzcurious.todo.Extras.FontButton1
+        android:text="\u2713 "
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_save_profile"
+        android:layout_weight="1"
+        android:background="@drawable/button"
+        android:elevation="4dp"
+        android:textAllCaps="false"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        tools:ignore="ObsoleteLayoutParam" />
 
 
 </RelativeLayout>
