@@ -185,6 +185,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
                                     .putString("id",task.getResult().getUser().getUid())
                                     .putString("name",acct.getDisplayName())
                                     .putString("email",acct.getEmail())
+                                    .putString("image",acct.getPhotoUrl().toString())
                                     .putString("birthday","NA")
                                     .apply();
 

@@ -16,7 +16,8 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/relativeLayout3">
+        android:id="@+id/relativeLayout3"
+        android:padding="2dp">
 
         <com.alwayzcurious.todo.Extras.FontButton1
             android:layout_width="180dp"
@@ -26,7 +27,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:background="@drawable/btn_cir_cal"
-            android:textSize="55sp"
+            android:textSize="70sp"
             android:textColor="#fff"
             tools:ignore="HardcodedText"
             android:clickable="false"/>
@@ -65,7 +66,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView_greeting"
-        android:textColor="#303030"
+        android:textColor="?android:attr/colorControlNormal"
         android:textSize="40sp"
         tools:ignore="HardcodedText"
         android:layout_below="@+id/include2"

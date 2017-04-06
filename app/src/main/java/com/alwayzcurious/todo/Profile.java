@@ -89,7 +89,6 @@ public class Profile extends AppCompatActivity {
        // circleImageView.setImageURI(Uri.parse(getIntent().getExtras().get("image").toString()));
 
         Glide.with(mContext).load(getIntent().getExtras().get("image").toString())
-                .thumbnail(0.8f)
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(circleImageView);

@@ -14,11 +14,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -65,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         calendar = Calendar.getInstance();
 
+        greeting.setText(getGreetingString());
 
         date.setText(String.format(Locale.ENGLISH,"%d",calendar.get(Calendar.DAY_OF_MONTH)));
         noToDO.setText("0");
@@ -79,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Date getCalenderString(Calendar calendar)
     {
         Date date = new Date();
+
 
         switch (calendar.get(Calendar.DAY_OF_WEEK))
         {
@@ -138,11 +143,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (view.getId())
         {
-            case  R.id.button_view_calendar:startActivity(new Intent(this, CalendarToDoOVerview.class)); break;
+            case  R.id.button_view_calendar:startActivity(new Intent(this, ToDoToday.class)); break;
         }
 
     }
 
+    private String getGreetingString(){
+        Calendar calendar = Calendar.getInstance();
+
+        if((calendar.get(Calendar.HOUR_OF_DAY)) < 12) {
+            return "Good Morning";
+        }
+        else if((calendar.get(Calendar.HOUR_OF_DAY)) > 12 || (calendar.get(Calendar.HOUR_OF_DAY)) == 12 )
+            return "Good Afternoon";
+        else if((calendar.get(Calendar.HOUR_OF_DAY)) ==15 || (calendar.get(Calendar.HOUR_OF_DAY))  > 15 )
+            return "Good Evening";
+        else    return "Welcome";
+
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main_activity, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(R.id.action_add == item.getItemId())
+            startActivity(new Intent(MainActivity.this,CreateTask.class));
+
+        return true;
+    }
 
     private class Date{
 
