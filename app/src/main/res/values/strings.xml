@@ -11,4 +11,7 @@
     <string name="fri">FRI</string>
     <string name="sat">SAT</string>
     <string name="last_date">30</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
 </resources>

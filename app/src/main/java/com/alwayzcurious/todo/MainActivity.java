@@ -79,11 +79,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-
-    private Date getCalenderString(Calendar calendar)
+     class Date1{
+        public String day,month;
+    }
+    Date1 getCalenderString(Calendar calendar)
     {
-        Date date = new Date();
 
+
+        Date1 date = new Date1();
 
         switch (calendar.get(Calendar.DAY_OF_WEEK))
         {
@@ -178,8 +181,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
-    private class Date{
 
-        public String day,month;
-    }
 }

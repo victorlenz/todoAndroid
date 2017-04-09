@@ -3,6 +3,9 @@
     package="com.alwayzcurious.todo">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -12,9 +15,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".SignUp" />
         <activity android:name=".Profile" />
-        <activity android:name=".MainActivity">
-
-        </activity>
+        <activity android:name=".MainActivity"></activity>
         <activity android:name=".CalendarToDoOVerview" />
         <activity android:name=".ToDoToday" />
         <activity android:name=".CreateTask">
@@ -24,6 +25,29 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".ReminderWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/reminder_widget_info" />
+        </receiver>
+
+        <activity android:name=".ReminderWidgetConfigureActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".NotificationService"
+            android:enabled="true"
+            />
+        <receiver android:name=".MyReceiver"
+            android:process=":remote"/>
     </application>
 
 </manifest>

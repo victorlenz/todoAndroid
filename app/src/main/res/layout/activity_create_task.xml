@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_create_task"
     android:layout_width="match_parent"
@@ -8,27 +9,213 @@
     <include layout="@layout/appbar"
         android:id="@+id/include5"/>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:orientation="vertical"
-        android:layout_below="@+id/include5"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:gravity="center_vertical">
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView2"
+        android:layout_below="@id/include5"
+       >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/include6">
 
-        <com.alwayzcurious.todo.Extras.FontEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Title"
-            android:background="@null"
-            android:textAlignment="center"
-            android:textSize="30sp" />
-        <com.alwayzcurious.todo.Extras.FontEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Add Description"
-            android:background="@null"
-            android:textAlignment="center" />
-    </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll1_taskBackgroundImage"
+                android:padding="20dp"
+
+                android:id="@+id/rl1"
+
+                android:background="@drawable/box_border_bottom">
+
+
+
+                <com.alwayzcurious.todo.Extras.FontTextView
+                    android:text="Date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView9"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:textSize="20sp" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_action_add"
+                    android:layout_alignTop="@+id/textViewDate"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:id="@+id/imageButtonSetData"
+                    android:background="@drawable/button_transparent_coloronclick"
+                    android:layout_alignBottom="@+id/textViewDate" />
+
+                <com.alwayzcurious.todo.Extras.FontTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:text="Tuesday"
+                    android:ems="10"
+                    android:id="@+id/textViewDate"
+                    android:layout_below="@+id/textView9"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/imageButtonSetData"
+                    android:layout_toStartOf="@+id/imageButtonSetData"
+                    android:textSize="30sp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#000"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl1"
+                android:padding="20dp"
+
+                android:background="@drawable/box_border_bottom"
+                android:id="@+id/rl2">
+
+                <com.alwayzcurious.todo.Extras.FontTextView
+                    android:text="Time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView10"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:textSize="20sp" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_action_add"
+                    android:layout_alignTop="@+id/textViewTime"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:id="@+id/imageButtonSetTime"
+                    android:background="@drawable/button_transparent_coloronclick"
+                    android:layout_alignBottom="@+id/textViewTime" />
+
+                <com.alwayzcurious.todo.Extras.FontTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:text="09:00"
+                    android:ems="10"
+                    android:id="@+id/textViewTime"
+                    android:layout_below="@+id/textView10"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/imageButtonSetTime"
+                    android:layout_toStartOf="@+id/imageButtonSetTime"
+                    android:textSize="30sp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#000"
+                    tools:ignore="HardcodedText" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl2"
+                android:padding="20dp"
+
+                android:background="@drawable/box_border_bottom"
+                android:id="@+id/rl3">
+
+                <com.alwayzcurious.todo.Extras.FontTextView
+                    android:text="Location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView11"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:textSize="20sp" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_action_add"
+                    android:layout_alignTop="@+id/textViewLocation"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:id="@+id/imageButtonSetLocation"
+                    android:background="@drawable/button_transparent_coloronclick"
+                    android:layout_alignBottom="@+id/textViewLocation" />
+
+                <com.alwayzcurious.todo.Extras.FontEditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:id="@+id/textViewLocation"
+                    android:layout_below="@+id/textView11"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@+id/imageButtonSetLocation"
+                    android:layout_toStartOf="@+id/imageButtonSetLocation"
+                    android:textSize="30sp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#000"
+                    android:background="@null"
+                    android:hint="type location"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:id="@+id/ll1_taskBackgroundImage"
+                android:background="#c2c2c2"
+              >
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/imageView_taskBackgroundImage"
+                    android:layout_alignParentTop="true" />
+
+                <com.alwayzcurious.todo.Extras.FontEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Title"
+                    android:background="@null"
+                    android:textAlignment="center"
+                    android:textSize="30sp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="101dp"
+                    android:id="@+id/editTextView_taskTitle"
+                    android:maxLength="20"
+                    android:maxLines="1"/>
+
+                <com.alwayzcurious.todo.Extras.FontEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Add Description"
+                    android:background="@null"
+                    android:textAlignment="center"
+                    android:layout_marginTop="15dp"
+                    android:layout_below="@+id/editTextView_taskTitle"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+            </RelativeLayout>
+
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:src="@drawable/ic_action_done_tick"
+                android:id="@+id/imageButtonCreateTask"
+                android:background="@drawable/button"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/rl3"/>
+        </RelativeLayout>
+
+
+
+    </ScrollView>
+
+
+
+
 </RelativeLayout>
