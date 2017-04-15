@@ -7,8 +7,11 @@ import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.PowerManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
+
+import com.alwayzcurious.todo.Extras.MyWakeLock;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -22,7 +25,15 @@ public class MyReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        MyWakeLock.acquire(context);
+
         Log.d( "TODO", "Broadcast"+intent.getAction());
+
+        if(intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED) ||
+                intent.getAction().equals(Intent.ACTION_LOCKED_BOOT_COMPLETED))
+        {
+            startWakefulService(context,new Intent(context, AlarmReschedulerService.class));
+        }
 
         //set Activity
        /* AlarmActivity inst = AlarmActivity.instance();
@@ -46,6 +57,8 @@ public class MyReceiver extends WakefulBroadcastReceiver {
         SimpleDateFormat  simpleDateFormat= new SimpleDateFormat("HH:mm:ss:SS", Locale.ENGLISH);
         Calendar taskCalendar = Calendar.getInstance();
         Log.d( "TODO","date test "+ simpleDateFormat.format(taskCalendar.getTimeInMillis()));
+
+        MyWakeLock.release();
 
 
     }

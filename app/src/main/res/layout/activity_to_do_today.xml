@@ -16,13 +16,13 @@
         android:orientation="vertical">
 
         <com.alwayzcurious.todo.Extras.FontTextView
-            android:text="13-02-2017"
+            android:text="Month"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/include3"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:id="@+id/textView5"
+            android:id="@+id/Month"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
@@ -44,10 +44,11 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_left"
                 android:background="@drawable/button_transparent_coloronclick"
-             />
+                android:padding="0dp"
+                android:layout_weight="0.24" />
 
             <com.alwayzcurious.todo.Extras.FontTextView
-                android:text="Month"
+                android:text="13-02-2017"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView6"

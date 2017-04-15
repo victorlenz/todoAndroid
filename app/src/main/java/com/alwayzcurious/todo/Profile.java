@@ -54,7 +54,7 @@ public class Profile extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().
-                        child("user/"+StaticInformation.FIREBASE_UID+"/birthday");
+                        child("users/"+StaticInformation.FIREBASE_UID+"/birthday");
                          databaseReference.setValue(currentDOB.getText().toString()).
                             addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override

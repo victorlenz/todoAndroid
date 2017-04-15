@@ -20,6 +20,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.alwayzcurious.todo.Extras.DatabaseManager;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button date,noToDO,dayName,todoCalendar;
     TextView greeting,monthYear;
     Calendar calendar;
+    DatabaseManager databaseManager;
 
 
     @Override
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        databaseManager = new DatabaseManager(this);
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -71,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         greeting.setText(getGreetingString());
 
         date.setText(String.format(Locale.ENGLISH,"%d",calendar.get(Calendar.DAY_OF_MONTH)));
-        noToDO.setText("0");
+        noToDO.setText(databaseManager.getThisDayTaskCount());
 
         dayName.setText(getCalenderString(calendar).day);
         monthYear.setText(String.format(Locale.ENGLISH,"%s %d",getCalenderString(calendar).month,calendar.get(Calendar.YEAR)));
@@ -114,12 +118,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case Calendar.DECEMBER : date.month ="December"; break;
             case Calendar.MAY : date.month ="May"; break;
         }
-
-
-
         return  date;
-
     }
+
 
     public Bitmap createCircleBitmap(Bitmap bitmapimg){
         Bitmap output = Bitmap.createBitmap(bitmapimg.getWidth(),

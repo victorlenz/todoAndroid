@@ -22,28 +22,35 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.alwayzcurious.todo.Extras.DatabaseManager;
+import com.alwayzcurious.todo.Extras.Task;
 import com.bumptech.glide.load.resource.bitmap.BitmapDecoder;
 
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 import java.util.TimeZone;
 
 public class CreateTask extends AppCompatActivity implements View.OnClickListener {
 
     TextView mTvDate,mTvTime,mTvLocation;
+    EditText taskTitle,taskDescription,isPreTaskRep;
     ImageView taskBackground;
     AlarmManager alarmManager;
     Calendar taskCalendar,tempTaskCalendar;
     SimpleDateFormat simpleDateFormat;
     static  String MY_TODO_REMINDER_INTENT_ACTION = "com.alwayzcurious.todo.reminder.";
-    CustomTime customTime = new CustomTime();
+
+    DatabaseManager databaseManager = new DatabaseManager(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +78,13 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
         mTvLocation = (TextView) findViewById(R.id.textViewLocation);
         taskBackground = (ImageView) findViewById(R.id.imageView_taskBackgroundImage);
 
+        taskTitle = (EditText) findViewById(R.id.editTextView_taskTitle);
+        taskDescription = (EditText) findViewById(R.id.editText_taskDescription);
+        isPreTaskRep = (EditText) findViewById(R.id.editTex_preTaskRep);
+
         findViewById(R.id.imageButtonSetData).setOnClickListener(this);
         findViewById(R.id.imageButtonSetTime).setOnClickListener(this);
         findViewById(R.id.imageButtonCreateTask).setOnClickListener(this);
-        findViewById(R.id.imageButtonSetLocation).setOnClickListener(this);
         findViewById(R.id.ll1_taskBackgroundImage).setBackgroundColor(Color.argb(0,0,0,0));
 
 
@@ -136,7 +146,13 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                  tempTaskCalendar = Calendar.getInstance();
+
+                                if(taskCalendar!=null)
+                                    tempTaskCalendar = (Calendar) taskCalendar.clone();
+                                else
+                                    tempTaskCalendar = Calendar.getInstance();
+
+
                                 tempTaskCalendar.set(Calendar.YEAR,year);
                                 tempTaskCalendar.set(Calendar.MONTH,month);
                                 tempTaskCalendar.set(Calendar.DAY_OF_MONTH,day);
@@ -165,7 +181,12 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
                     public void onTimeSet(TimePicker timePicker, int i, int i1) {
                         mTvTime.setText(String.valueOf(i)+":"+String.valueOf(i1) + String.valueOf( (c1.get(Calendar.AM_PM)) == Calendar.PM ? "PM":"AM"));
 
-                        taskCalendar = (Calendar) tempTaskCalendar.clone();
+                        if(tempTaskCalendar!=null)
+                            taskCalendar = (Calendar) tempTaskCalendar.clone();
+                        else
+                            taskCalendar = Calendar.getInstance();
+
+
                         taskCalendar.set(Calendar.HOUR_OF_DAY,i);
                         taskCalendar.set(Calendar.MINUTE,i1);
                         taskCalendar.set(Calendar.SECOND,0);
@@ -176,8 +197,6 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
 
                         Log.d("TODO","calendar ="+taskCalendar.get(Calendar.HOUR_OF_DAY)+" "+taskCalendar.get(Calendar.MINUTE)
                                 +","+getCalenderString(taskCalendar).month +" "+getCalenderString(taskCalendar).day);
-
-
 
                     }
                 },c1.get(Calendar.HOUR_OF_DAY),c1.get(Calendar.MINUTE),false);
@@ -193,6 +212,7 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
             case R.id.imageButtonCreateTask :{
 
                 Intent intent = new Intent(CreateTask.this,MyReceiver.class);
+                intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                // intent.setAction(MY_TODO_REMINDER_INTENT_ACTION+"1");
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(CreateTask.this,99,intent,0);
                 alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -200,8 +220,9 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
                 //TODO fix the bug millisecond problem
 
 
-
-                alarmManager.set(AlarmManager.RTC_WAKEUP,taskCalendar.getTimeInMillis(),pendingIntent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,taskCalendar.getTimeInMillis(),pendingIntent);
+                }else  alarmManager.set(AlarmManager.RTC_WAKEUP,taskCalendar.getTimeInMillis(),pendingIntent);
                 Log.d( "TODO","date test set "+ simpleDateFormat.format(taskCalendar.getTimeInMillis()));
 
 
@@ -210,6 +231,32 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
                 Log.d("TODO", (""+ alarmManager.getNextAlarmClock().getTriggerTime()));
                 Log.d( "TODO","date test 1"+ simpleDateFormat.format(alarmManager.getNextAlarmClock().getTriggerTime()));
                 Toast.makeText(this,"alarm startet@",Toast.LENGTH_LONG).show();
+
+                //TODO apply validations
+
+                Task task = new Task();
+
+                task.setDateDay(taskCalendar.get(Calendar.DAY_OF_MONTH));
+                task.setDateMonth(taskCalendar.get(Calendar.MONTH));
+                task.setDateYear(taskCalendar.get(Calendar.YEAR));
+                task.setTimeHr(taskCalendar.get(Calendar.HOUR));
+                task.setTimeMin(taskCalendar.get(Calendar.MINUTE));
+                task.setTimeSec(taskCalendar.get(Calendar.SECOND));
+                task.setTitle(taskTitle.getText().toString());
+                task.setPreTaskRepetition((Integer.valueOf(isPreTaskRep.getText().toString())));
+                task.setIdentity(generateIdentity());
+                task.setPostTaskRepetition(0);
+                task.setIsPostTaskRepition(false);
+
+                if(!isPreTaskRep.getText().toString().equals("0")){
+                    task.setDescription(taskDescription.getText().toString());
+                    task.setIsPreTaskRepetiton(true);
+                }
+                else task.setIsPreTaskRepetiton(false);
+
+                databaseManager.createTask(task);
+                finish();
+
             }
         }
 
@@ -261,6 +308,14 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
     class CustomTime{
 
         int day,year,hour,month,minutes;
+
+    }
+
+    public String generateIdentity() {
+        byte[] array = new byte[10]; // length is bounded by 7
+        new Random().nextBytes(array);
+
+        return new String(array, Charset.forName("UTF-8"));
 
     }
 }

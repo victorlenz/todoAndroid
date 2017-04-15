@@ -21,7 +21,7 @@
             android:text="08:00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView7"
+            android:id="@+id/textView_time"
             android:layout_gravity="top"
             android:textSize="24sp"
             android:textColor="#000"/>
@@ -30,10 +30,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="AM"
-            android:layout_alignBaseline="@+id/textView7"
-            android:layout_alignBottom="@+id/textView7"
-            android:layout_toRightOf="@+id/textView7"
-            android:layout_toEndOf="@+id/textView7" />
+            android:layout_alignBaseline="@+id/textView_time"
+            android:layout_alignBottom="@+id/textView_time"
+            android:layout_toRightOf="@+id/textView_time"
+            android:layout_toEndOf="@+id/textView_time"
+            android:id="@+id/textView_AMPM" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -42,26 +43,31 @@
         android:layout_weight="6.5">
 
         <com.alwayzcurious.todo.Extras.FontTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textView_title"
+            android:text="5435435435"
+            android:id="@+id/textView_Body" />
+
+        <com.alwayzcurious.todo.Extras.FontTextView
             android:text="TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView8"
+            android:id="@+id/textView_title"
             android:textAlignment="textStart"
             android:layout_gravity="start"
             android:layout_weight="4"
             android:textSize="24sp"
             android:textColor="#000"
-            android:layout_marginBottom="5dp"/>
-        <com.alwayzcurious.todo.Extras.FontTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textView8"
-            android:text="5435435435"/>
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
     </RelativeLayout>
 
     <ImageView
         android:layout_width="10dp"
         android:layout_height="10dp"
         android:layout_weight="0.01"
-        android:src="@color/buttonColor"/>
+        android:src="@color/buttonColor"
+        android:id="@+id/imageView_Color" />
 </LinearLayout>

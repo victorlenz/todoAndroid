@@ -22,6 +22,7 @@ public class NotificationService extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
        sendNotification("ALram "+intent.getAction());
+        Log.d("TODO","starting notification");
 
     }
 

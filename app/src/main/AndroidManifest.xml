@@ -6,6 +6,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
     <application
         android:allowBackup="true"
@@ -13,17 +16,19 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SignUp" />
+        <activity android:name=".SignUp"></activity>
         <activity android:name=".Profile" />
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".CalendarToDoOVerview" />
-        <activity android:name=".ToDoToday" />
-        <activity android:name=".CreateTask">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".CalendarToDoOVerview" />
+        <activity android:name=".ToDoToday" />
+        <activity android:name=".CreateTask">
+
         </activity>
 
         <receiver android:name=".ReminderWidget">
@@ -47,7 +52,13 @@
             android:enabled="true"
             />
         <receiver android:name=".MyReceiver"
-            android:process=":remote"/>
+           android:process=":remote">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.DATE_CHANGED"/>
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED"/>
+            </intent-filter>
+            </receiver>
     </application>
 
 </manifest>

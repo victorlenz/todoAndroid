@@ -16,11 +16,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:id="@+id/textView"
+        android:id="@+id/textView2"
         android:contentDescription="get started"
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:textColor="@android:color/background_light"
-        android:layout_below="@+id/imageView"
+        android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true" />
 
     <ImageView
@@ -38,31 +38,60 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/textView"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:gravity="center_horizontal"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="66dp"
-        android:weightSum="4"
-        android:textAlignment="center"
-        >
+        android:id="@id/rl1"
+        android:layout_below="@id/textView2"
+        android:layout_marginTop="50dp"
+        android:layout_alignParentBottom="true">
 
 
         <com.alwayzcurious.todo.Extras.FontButton1
             android:text="Sign in with Google"
-            android:layout_width="match_parent"
-            android:layout_height="78dp"
+            android:layout_width="181dp"
+            android:layout_height="68dp"
             android:id="@+id/button_signIn"
             android:background="@drawable/button"
             android:gravity="center"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:textAllCaps="false"
             android:textColor="#fff"
-            android:textSize="20sp" />
-    </LinearLayout>
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="14dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+           />
+
+        <ImageView
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            app:srcCompat="@drawable/common_google_signin_btn_icon_dark_normal"
+            android:id="@+id/imageView3"
+            android:background="@color/buttonColor"
+            android:layout_alignTop="@+id/button_signIn"
+            android:layout_toStartOf="@+id/button_signIn"
+            android:layout_toLeftOf="@+id/button_signIn" />
+
+    </RelativeLayout>
+
+    <com.alwayzcurious.todo.Extras.FontTextView
+        android:text="Remind Me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="45dp"
+        android:id="@+id/textView"
+        android:contentDescription="get started"
+        android:textSize="30sp"
+        android:textColor="@android:color/background_light"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>
