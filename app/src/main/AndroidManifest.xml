@@ -3,12 +3,12 @@
     package="com.alwayzcurious.todo">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <application
         android:allowBackup="true"
@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SignUp"></activity>
+        <activity android:name=".SignUp" />
         <activity android:name=".Profile" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -27,9 +27,7 @@
         </activity>
         <activity android:name=".CalendarToDoOVerview" />
         <activity android:name=".ToDoToday" />
-        <activity android:name=".CreateTask">
-
-        </activity>
+        <activity android:name=".CreateTask"></activity>
 
         <receiver android:name=".ReminderWidget">
             <intent-filter>
@@ -49,16 +47,19 @@
 
         <service
             android:name=".NotificationService"
-            android:enabled="true"
-            />
-        <receiver android:name=".MyReceiver"
-           android:process=":remote">
+            android:enabled="true" />
+
+        <receiver
+            android:name=".MyReceiver"
+            android:process=":remote">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.DATE_CHANGED"/>
-                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
             </intent-filter>
-            </receiver>
+        </receiver>
+
+        <activity android:name=".ViewTask"></activity>
     </application>
 
 </manifest>

@@ -62,10 +62,16 @@ public class TodoAdapter extends BaseAdapter {
 
         viewHolder.time.setText(String.format(Locale.ENGLISH,"%02d : %02d",calendar.get(Calendar.HOUR),task.getTimeMin()));
         viewHolder.ampm.setText((calendar.get(Calendar.AM_PM))==Calendar.PM?"PM":"AM");
-        viewHolder.title.setText(String.format(Locale.ENGLISH,"%s %s",getCalenderString(calendar).day, getCalenderString(calendar).month));
-        viewHolder.body.setText(task.getTitle());
+        viewHolder.title.setText(task.getTitle());
+        //viewHolder.title.setText(String.format(Locale.ENGLISH,"%s %s",getCalenderString(calendar).day, getCalenderString(calendar).month));
 
-        return null;
+        if (task.getDescription().length()>10)
+             viewHolder.body.setText(task.getDescription().substring(0,10).concat("..."));
+        else viewHolder.body.setText(task.getDescription());
+
+        MyView.setTag(R.id.textView_Body,task);
+
+        return MyView;
     }
 
 
@@ -80,6 +86,7 @@ public class TodoAdapter extends BaseAdapter {
             title    = (TextView) v.findViewById(R.id.textView_title);
             body = (TextView) v.findViewById(R.id.textView_Body);
             color = (ImageView) v.findViewById(R.id.imageView_Color);
+            ampm = (TextView)v.findViewById(R.id.textView_AMPM);
 
 
         }

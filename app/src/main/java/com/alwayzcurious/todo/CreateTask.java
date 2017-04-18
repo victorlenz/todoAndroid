@@ -151,12 +151,9 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
                                     tempTaskCalendar = (Calendar) taskCalendar.clone();
                                 else
                                     tempTaskCalendar = Calendar.getInstance();
-
-
                                 tempTaskCalendar.set(Calendar.YEAR,year);
                                 tempTaskCalendar.set(Calendar.MONTH,month);
                                 tempTaskCalendar.set(Calendar.DAY_OF_MONTH,day);
-
 
                                 Log.d( "TODO","date test "+ simpleDateFormat.format(tempTaskCalendar.getTimeInMillis()));
                                 Log.d("TODO","calendar ="+tempTaskCalendar.get(Calendar.HOUR_OF_DAY)+" "+tempTaskCalendar.get(Calendar.MINUTE)
@@ -263,7 +260,6 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
 
     }
 
-
     class Date1{
         public String day,month;
     }
@@ -298,8 +294,6 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
             case Calendar.DECEMBER : date.month ="December"; break;
             case Calendar.MAY : date.month ="May"; break;
         }
-
-
 
         return  date;
 

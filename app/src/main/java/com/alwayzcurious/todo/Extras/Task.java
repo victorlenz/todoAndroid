@@ -1,10 +1,13 @@
 package com.alwayzcurious.todo.Extras;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by vivek on 4/10/2017.
  */
 
-public class Task{
+public class Task implements Parcelable{
 
     int dateDay;
     int dateMonth;
@@ -138,5 +141,16 @@ public class Task{
 
 
     String location,title,description;
-    
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
+
+
+    }
 }

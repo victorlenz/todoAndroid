@@ -8,6 +8,8 @@
     android:layout_marginBottom="10dp"
     android:layout_marginRight="2dp"
     android:layout_marginEnd="2dp"
+    android:padding="20dp"
+    android:background="@drawable/box_border_bottom"
 
     >
 
@@ -42,12 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="6.5">
 
-        <com.alwayzcurious.todo.Extras.FontTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textView_title"
-            android:text="5435435435"
-            android:id="@+id/textView_Body" />
+
 
         <com.alwayzcurious.todo.Extras.FontTextView
             android:text="TextView"
@@ -62,6 +59,12 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
+        <com.alwayzcurious.todo.Extras.FontTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textView_title"
+            android:text="5435435435"
+            android:id="@+id/textView_Body" />
     </RelativeLayout>
 
     <ImageView

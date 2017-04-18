@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -112,18 +113,23 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public List<Task> getThisDayTask (int dateDay,int dateMonth,int dateYear, int hr, int minute,int sec)
     {
 
-        String query="SELECT * FROM " + TABLE + "where dateYear >= "+dateYear +" and dateMonth >=" + dateMonth +" and dateDay = "+ dateDay
-               +" and timeHr >= "+hr +" and timeMin >= "+ minute +" and timeSec >= "+sec;
+        String query="SELECT * FROM " + TABLE + " where dateYear >= "+dateYear +" and dateMonth >=" + dateMonth +" and dateDay = "+ dateDay
+              /* +" and timeHr >= "+hr +" and timeMin >= "+ minute +" and timeSec >= "+sec*/;
 
         List<Task> taskList = new ArrayList<>();
 
         SQLiteDatabase db=getReadableDatabase();
         Cursor cursor = db.rawQuery(query,null);
 
+        Log.d("TODO","getThisDayTask "+query+" "+cursor.getCount());
+
         if(cursor.moveToFirst())
         {
             do{
                 Task task = new Task();
+
+                for(int i=0;i<cursor.getColumnCount();i++)
+                Log.i("TODO",cursor.getColumnName(i)+"=>"+cursor.getString(i)+" "+i);
 
                 task.title = cursor.getString(1);
                 task.description = cursor.getString(2);
@@ -133,10 +139,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 task.dateMonth = Integer.parseInt(cursor.getString(6));
                 task.dateYear = Integer.parseInt(cursor.getString(7));
                 task.dateDay = Integer.parseInt(cursor.getString(8));
-                task.timeHr = Integer.parseInt(cursor.getString(9));
                 task.identity = cursor.getString(10);
                 task.isPreTaskRepetiton = Boolean.parseBoolean(cursor.getString(11));
-                task.preTaskRepetition = Integer.parseInt(cursor.getString(12));
+               // task.preTaskRepetition = Integer.parseInt(cursor.getString(12));
 
 
                 taskList.add(task);
@@ -163,8 +168,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
 
 
-        String query="SELECT * FROM " + TABLE + "where dateYear = "+dateYear +" and dateMonth =" + dateMonth +" and dateDay = "+ dateDay
-                +" and timeHr >= "+hr +" and timeMin >= "+ minute +" and timeSec >= "+sec;
+        String query="SELECT * FROM " + TABLE + " where dateYear = "+dateYear +" and dateMonth =" + dateMonth +" and dateDay = "+ dateDay
+               /* +" and timeHr >= "+hr +" and timeMin >= "+ minute +" and timeSec >= "+sec*/;
 
 
         SQLiteDatabase db=getReadableDatabase();
@@ -177,4 +182,17 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
 
+    public String getCompletedTask() {
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor= db.rawQuery("select * from events where isFinished =1",null);
+        return String.valueOf(cursor.getCount());
+    }
+
+    public String getPendingTask() {
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor= db.rawQuery("select * from events where isFinished =0 or isFinished is null ",null);
+        return String.valueOf(cursor.getCount());
+    }
 }
