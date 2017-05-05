@@ -45,7 +45,8 @@
                 android:src="@drawable/ic_left"
                 android:background="@drawable/button_transparent_coloronclick"
                 android:padding="0dp"
-                android:layout_weight="0.24" />
+                android:layout_weight="0.24"
+                android:id="@+id/imageButton_prevDay" />
 
             <com.alwayzcurious.todo.Extras.FontTextView
                 android:text="13-02-2017"
@@ -63,7 +64,7 @@
                 android:src="@drawable/ic_right"
                 android:background="@drawable/button_transparent_coloronclick"
 
-                />
+                android:id="@+id/imageButton_nextDay" />
 
         </LinearLayout>
 

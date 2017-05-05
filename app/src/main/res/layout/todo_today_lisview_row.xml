@@ -65,6 +65,13 @@
             android:layout_below="@id/textView_title"
             android:text="5435435435"
             android:id="@+id/textView_Body" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/event_id"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <ImageView

@@ -5,67 +5,48 @@ import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.support.annotation.StringDef;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.alwayzcurious.todo.Extras.DatabaseManager;
 import com.alwayzcurious.todo.Extras.Task;
 
-import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.Random;
 
-public class CreateTask extends AppCompatActivity implements View.OnClickListener {
+import static com.alwayzcurious.todo.ViewTask.getDay;
+import static com.alwayzcurious.todo.ViewTask.getMonth;
+
+public class EditTask extends AppCompatActivity implements View.OnClickListener{
+
 
     TextView mTvDate,mTvTime,mTvLocation;
     EditText taskTitle,taskDescription, preTaskRepFreq,preTaskRepFreqMin;
-    ImageView taskBackground;
+    ImageView taskBackground,editTask;
+
     AlarmManager alarmManager;
     Calendar taskCalendar,tempTaskCalendar;
     SimpleDateFormat simpleDateFormat;
-    static  String MY_TODO_REMINDER_INTENT_ACTION = "com.alwayzcurious.todo.reminder.";
 
-    DatabaseManager databaseManager = new DatabaseManager(this);
+    DatabaseManager databaseManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_task);
+        setContentView(R.layout.activity_edit_task);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
-
-        SpannableString s = new SpannableString("Create New Task");
-        s.setSpan(new TypefaceSpan(this,"Bariol_Regular.otf"), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        taskCalendar = Calendar.getInstance();
-        simpleDateFormat = new SimpleDateFormat("HH:mm:ss:SS",Locale.ENGLISH);
-
-        // Update the action bar title with the TypefaceSpan instance
-
-        myToolbar.setTitle(s);
-        myToolbar.setNavigationIcon(R.drawable.ic_options);
-        myToolbar.setBackgroundColor(Color.WHITE);
-        myToolbar.setTitleTextColor(Color.BLACK);
+        databaseManager = new DatabaseManager(this);
 
         mTvDate = (TextView) findViewById(R.id.textViewDate);
         mTvTime = (TextView) findViewById(R.id.textViewTime);
@@ -77,53 +58,35 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
         preTaskRepFreq = (EditText) findViewById(R.id.editTex_preTaskFreq);
         preTaskRepFreqMin =(EditText) findViewById(R.id.edittext_preTaskinterval);
 
+        Task task1= databaseManager.getTaskById(getIntent().getStringExtra("taskId"));
+        mTvDate.setText(String.format(Locale.ENGLISH, "%s, %s %02d", getDay(task1.getDateDay()), getMonth(task1.getDateMonth()), task1.getDateDay()));
+        mTvTime.setText(String.format(Locale.ENGLISH,"%02d :%02d",task1.getTimeHr(),task1.getTimeMin()));
+        mTvLocation.setText(task1.getLocation());
+        taskBackground.setImageURI(null);
+
+        editTask =(ImageButton) findViewById(R.id.imageButtonCreateTask);
+        editTask.setOnClickListener(this);
+
+        taskTitle.setText(task1.getTitle());
+        taskDescription.setText(task1.getDescription());
+
         findViewById(R.id.imageButtonSetData).setOnClickListener(this);
         findViewById(R.id.imageButtonSetTime).setOnClickListener(this);
         findViewById(R.id.imageButtonCreateTask).setOnClickListener(this);
-        findViewById(R.id.ll1_taskBackgroundImage).setBackgroundColor(Color.argb(0,0,0,0));
+
+        Log.d("ViewTask","Task=>"+task1.getPreTaskFrequency() +" total task=>"+ databaseManager.getTotalTaskCount());
+        Log.d("ViewTask","Task=>"+task1.getPreTaskRepetitionMinutes());
+
+        mTvLocation.setText(task1.getLocation());
+
+        preTaskRepFreq.setText(String.valueOf(task1.getPreTaskFrequency()));
+        preTaskRepFreqMin.setText(String.valueOf(task1.getPreTaskRepetitionMinutes()));
+
+        taskCalendar = Calendar.getInstance();
+        taskCalendar.set(task1.getDateYear(),task1.getDateMonth(),task1.getDateDay(),task1.getTimeHr(),task1.getTimeMin(),task1.getTimeSec());
+        tempTaskCalendar = (Calendar) taskCalendar.clone();
 
 
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_create_task,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if(item.getItemId() == R.id.action_pick_image_fortask)
-        {
-            Intent t = new Intent();
-            t.setType("image/*");
-            t.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(t,999);
-        }
-        return false;
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK)
-        {
-            if(requestCode == 999)
-            {
-
-                    taskBackground.setImageURI(data.getData());
-                    findViewById(R.id.ll1_taskBackgroundImage).setBackgroundColor(Color.argb(0,0,0,0));
-                    //saveImage()
-                Log.d("TODO","image set "+data.getData());
-            }
-        }
-        else {
-            Toast.makeText(this,"RESULT FALSE",Toast.LENGTH_LONG).show();
-
-
-        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -138,7 +101,7 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
 
 
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(CreateTask.this,
+                DatePickerDialog datePickerDialog = new DatePickerDialog(EditTask.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
@@ -153,9 +116,9 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
 
                                 Log.d( "TODO","date test "+ simpleDateFormat.format(tempTaskCalendar.getTimeInMillis()));
                                 Log.d("TODO","calendar ="+tempTaskCalendar.get(Calendar.HOUR_OF_DAY)+" "+tempTaskCalendar.get(Calendar.MINUTE)
-                                +","+getCalenderString(tempTaskCalendar).month +" "+getCalenderString(tempTaskCalendar).day);
+                                        +","+getCalenderString(tempTaskCalendar).month +" "+getCalenderString(tempTaskCalendar).day);
 
-                                mTvDate.setText(String.format(Locale.ENGLISH,"%s, %s %02d",getCalenderString(tempTaskCalendar).day, getCalenderString(tempTaskCalendar).month,day));
+                                mTvDate.setText(String.format(Locale.ENGLISH,"%s %s %02d",getCalenderString(tempTaskCalendar).day, getCalenderString(tempTaskCalendar).month,day));
                             }
                         },c1.get(Calendar.YEAR),
                         c1.get(Calendar.MONTH),
@@ -165,14 +128,14 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
                 datePickerDialog.show();
             }
 
-             break;
+            break;
 
             case R.id.imageButtonSetTime : {
 
-                TimePickerDialog timePickerDialog = new TimePickerDialog(CreateTask.this, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(EditTask.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int i, int i1) {
-                        mTvTime.setText(String.format(Locale.ENGLISH,"%02d:%02d %s ",i,i1,String.valueOf( (c1.get(Calendar.AM_PM)) == Calendar.PM ? "PM":"AM")));
+                        mTvTime.setText(String.valueOf(i)+":"+String.valueOf(i1) + String.valueOf( (c1.get(Calendar.AM_PM)) == Calendar.PM ? "PM":"AM"));
 
                         if(tempTaskCalendar!=null)
                             taskCalendar = (Calendar) tempTaskCalendar.clone();
@@ -205,9 +168,16 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
             case R.id.imageButtonCreateTask :{
 
 
-               // intent.setAction(MY_TODO_REMINDER_INTENT_ACTION+"1");
+
+                //TODO fix the bug millisecond problem
 
 
+                Intent intentCancel = new Intent();
+                intentCancel.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                intentCancel.putExtra("id",getIntent().getStringExtra("taskId"));
+                PendingIntent pendingIntentforCancel = PendingIntent.getBroadcast(EditTask.this,Integer.parseInt(getIntent().getStringExtra("taskId")), intentCancel,PendingIntent.FLAG_UPDATE_CURRENT);
+                alarmManager = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+                alarmManager.cancel(pendingIntentforCancel);
 
                 //TODO apply validations
 
@@ -222,7 +192,8 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
                 task.setTitle(taskTitle.getText().toString());
                 task.setLocation(mTvLocation.getText().toString());
                 task.setDescription(taskDescription.getText().toString());
-                task.setIdentity(generateIdentity());
+               //TODO do this
+               // task.setIdentity(generateIdentity());
 
 
                 if(!preTaskRepFreq.getText().toString().equals("0")){
@@ -233,25 +204,15 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
                     task.setPreTaskRepetitionMinutes(0);
                     task.setPreTaskFrequency(0);
                 }
-
-               String lastId= databaseManager.createTask(task);
-                Intent intent = new Intent(CreateTask.this,MyReceiver.class);
+                databaseManager.deleteTask(getIntent().getStringExtra("taskId"));
+               String id= databaseManager.createTask(task);
+                Intent intent = new Intent(EditTask.this,MyReceiver.class);
+                intent.putExtra("id",id);
                 intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-                intent.putExtra("id",lastId);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(CreateTask.this,Integer.parseInt(lastId),intent,0);
-                alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                // intent.setAction(MY_TODO_REMINDER_INTENT_ACTION+"1");
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(EditTask.this,Integer.parseInt(id),intent,0);
                 alarmManager.set(AlarmManager.RTC_WAKEUP,taskCalendar.getTimeInMillis(),pendingIntent);
-                Log.d( "TODO","date test set "+ simpleDateFormat.format(taskCalendar.getTimeInMillis()));
 
-                //TODO fix the bug millisecond problem
-
-
-
-                Log.d("TODO","calendar ="+taskCalendar.get(Calendar.HOUR_OF_DAY)+" "+taskCalendar.get(Calendar.MINUTE)
-                        +","+getCalenderString(taskCalendar).month +" "+getCalenderString(taskCalendar).day);
-                Log.d("TODO", (""+ alarmManager.getNextAlarmClock().getTriggerTime()));
-                Log.d( "TODO","date test 1"+ simpleDateFormat.format(alarmManager.getNextAlarmClock().getTriggerTime()));
-                Toast.makeText(this,"alarm startet@",Toast.LENGTH_LONG).show();
                 finish();
 
             }
@@ -259,14 +220,13 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
 
 
     }
-
     class Date1{
         public String day,month;
     }
-   Date1 getCalenderString(Calendar calendar)
+    Date1 getCalenderString(Calendar calendar)
     {
 
-       Date1 date = new Date1();
+        Date1 date = new Date1();
 
         switch (calendar.get(Calendar.DAY_OF_WEEK))
         {
@@ -296,19 +256,6 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
         }
 
         return  date;
-
-    }
-
-    class CustomTime{
-
-        int day,year,hour,month,minutes;
-
-    }
-
-    public String generateIdentity() {
-
-        Integer integer = new Random().nextInt(999999999);
-        return String.valueOf(integer);
 
     }
 }

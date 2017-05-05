@@ -1,6 +1,7 @@
 package com.alwayzcurious.todo;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,8 @@ public class TodoAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
+
+        Log.i("TODO","adapter task size"+taskList.size()+" ");
         return taskList.size();
     }
 
@@ -56,6 +59,10 @@ public class TodoAdapter extends BaseAdapter {
             viewHolder = new ViewHolder(MyView);
         }
 
+        if(viewHolder == null)
+        {
+            viewHolder = new ViewHolder(MyView);
+        }
         Task task = taskList.get(i);
 
         calendar.set(task.getDateYear(),task.getDateMonth(),task.getDateDay(),task.getTimeHr(),task.getTimeMin(),task.getTimeSec());
@@ -64,7 +71,7 @@ public class TodoAdapter extends BaseAdapter {
         viewHolder.ampm.setText((calendar.get(Calendar.AM_PM))==Calendar.PM?"PM":"AM");
         viewHolder.title.setText(task.getTitle());
         //viewHolder.title.setText(String.format(Locale.ENGLISH,"%s %s",getCalenderString(calendar).day, getCalenderString(calendar).month));
-
+        viewHolder.id.setText( String.valueOf(task.getId()));
         if (task.getDescription().length()>10)
              viewHolder.body.setText(task.getDescription().substring(0,10).concat("..."));
         else viewHolder.body.setText(task.getDescription());
@@ -77,7 +84,7 @@ public class TodoAdapter extends BaseAdapter {
 
     class ViewHolder
     {
-        TextView title,time,body,ampm;
+        TextView title,time,body,ampm,id;
         ImageView color;
 
         ViewHolder(View v)
@@ -87,6 +94,7 @@ public class TodoAdapter extends BaseAdapter {
             body = (TextView) v.findViewById(R.id.textView_Body);
             color = (ImageView) v.findViewById(R.id.imageView_Color);
             ampm = (TextView)v.findViewById(R.id.textView_AMPM);
+            id= (TextView)v.findViewById(R.id.event_id);
 
 
         }

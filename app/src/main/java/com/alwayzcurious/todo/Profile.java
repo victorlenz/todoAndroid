@@ -1,6 +1,7 @@
 package com.alwayzcurious.todo;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import java.util.Locale;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
@@ -18,11 +20,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alwayzcurious.todo.Extras.Validator;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,12 +41,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Profile extends AppCompatActivity {
 
 
-    TextView currentDOB;
+    TextView currentDOB; EditText uName;
     Calendar c;
     Context mContext;
     Button changeProfileImage,saveInfo;
     CircleImageView circleImageView;
     Uri profileImageUrl=null;
+    Validator validator;
+
+    ProgressDialog alertDialogue;
     final private static int GALLERY_IMAGE_INTENT = 646;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,19 +57,38 @@ public class Profile extends AppCompatActivity {
 
         setContentView(R.layout.activity_profile);
 
+        uName = (EditText) findViewById(R.id.editTextView_name);
+
+        try {
+            uName.setText(getIntent().getStringExtra("name"));
+        }catch (Exception e){ Log.e("TODO","Uname not defined");}
+        alertDialogue = new ProgressDialog(Profile.this);
+        alertDialogue.setIndeterminate(true);
+        alertDialogue.setMessage("Please Wait While we Build your Profile");
         saveInfo = (Button) findViewById(R.id.button_save_profile);
         saveInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+               if(Validator.validateLength(uName.getText().toString(),4) && Validator.validateSpecialChar(uName.getText().toString()))
+                {
+                    Toast.makeText(Profile.this,"min length 4 and no special char",Toast.LENGTH_LONG);
+                    return;
+                }
+
+
+                alertDialogue.show();
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().
                         child("users/"+StaticInformation.FIREBASE_UID+"/birthday");
                          databaseReference.setValue(currentDOB.getText().toString()).
                             addOnCompleteListener(new OnCompleteListener<Void>() {
+
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful())
                                 {
                                     startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                                    alertDialogue.dismiss();
                                     finish();
                                 }
 

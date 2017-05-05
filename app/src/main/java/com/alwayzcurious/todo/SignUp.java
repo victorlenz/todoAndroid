@@ -62,7 +62,9 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener, G
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        ignoreBatteryOptimization();
+       try{
+           ignoreBatteryOptimization();
+       }catch (Exception e){Log.e("TODO","battery OPT not found");}
 
         sharedPreferences = getSharedPreferences(APP_SHARED_PREFERENCES,MODE_PRIVATE);
         signIn = (Button) findViewById(R.id.button_signIn);

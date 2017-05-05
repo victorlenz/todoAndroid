@@ -148,12 +148,12 @@
                     android:layout_alignParentStart="true"
                     android:textSize="20sp" />
 
-                <com.alwayzcurious.todo.Extras.FontEditText
+                <com.alwayzcurious.todo.Extras.FontTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:inputType="number"
                     android:ems="10"
-                    android:id="@+id/editTex_preTaskRep"
+                    android:id="@+id/editTex_preTaskRepFreq"
                     android:layout_below="@+id/textView12"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
@@ -187,7 +187,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:id="@+id/textViewLocation2"
+                    android:id="@+id/edittext_interval"
                     android:layout_below="@+id/textView13"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
@@ -270,14 +270,14 @@
             android:layout_width="wrap_content"
             android:layout_height="70dp"
             android:src="@drawable/ic_action_edit"
-            android:id="@+id/gfd"
+            android:id="@+id/button_editTask"
             android:background="@drawable/button"
             android:layout_weight="1"/>
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="70dp"
             android:src="@drawable/ic_action_mark_done"
-            android:id="@+id/gfdg"
+            android:id="@+id/button_markDone"
             android:background="@drawable/button"
 
             android:layout_weight="1"/>
@@ -286,7 +286,7 @@
             android:layout_width="wrap_content"
             android:layout_height="70dp"
             android:src="@drawable/ic_action_delete"
-            android:id="@+id/gfdgh"
+            android:id="@+id/button_deleteTask"
             android:background="@drawable/button"
             android:layout_weight="1"/>
     </LinearLayout>

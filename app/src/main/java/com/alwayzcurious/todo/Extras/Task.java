@@ -7,84 +7,38 @@ import android.os.Parcelable;
  * Created by vivek on 4/10/2017.
  */
 
-public class Task implements Parcelable{
+public class Task {
 
     int dateDay;
     int dateMonth;
-    int dateYear,postTaskRepetition,preTaskRepetition;
-    String identity;
+    int dateYear,preTaskRepetitionMinutes;
+    String identity,title,description,location;
+    int id;
+    int timeHr;
+    int timeMin;
+    int timeSec;
+    int preTaskFrequency;
 
-    public int getPostTaskRepetition() {
-        return postTaskRepetition;
+
+    public String getLocation() {
+        return location;
     }
 
-    public boolean isPreTaskRepetiton() {
-
-        return isPreTaskRepetiton;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public void setIsPreTaskRepetiton(boolean preTaskRepetiton) {
-        isPreTaskRepetiton = preTaskRepetiton;
+    public int getPreTaskFrequency() {
+        return preTaskFrequency;
     }
 
-    public int getIsPostTaskRepetition() {
-        return postTaskRepetition;
+    public void setPreTaskFrequency(int preTaskFrequency) {
+        this.preTaskFrequency = preTaskFrequency;
     }
 
-    public void setPostTaskRepetition(int postTaskRepetition) {
-        this.postTaskRepetition = postTaskRepetition;
-    }
+    public String getTitle() {
 
-    public int getPreTaskRepetition() {
-        return preTaskRepetition;
-    }
-
-    public void setPreTaskRepetition(int preTaskRepetition) {
-        this.preTaskRepetition = preTaskRepetition;
-    }
-
-    public String getIdentity() {
-        return identity;
-    }
-
-    public void setIdentity(String identity) {
-        this.identity = identity;
-    }
-
-    boolean isPreTaskRepetiton;
-
-    public boolean isPostTaskRepition() {
-        return isPostTaskRepition;
-    }
-
-    public void setIsPostTaskRepition(boolean postTaskRepition) {
-        isPostTaskRepition = postTaskRepition;
-    }
-
-    boolean isPostTaskRepition;
-
-    public int getDateDay() {
-        return dateDay;
-    }
-
-    public void setDateDay(int dateDay) {
-        this.dateDay = dateDay;
-    }
-
-    public int getDateMonth() {
-        return dateMonth;
-    }
-
-    public void setDateMonth(int dateMonth) {
-        this.dateMonth = dateMonth;
-    }
-
-    public int getDateYear() {
-        return dateYear;
-    }
-
-    public void setDateYear(int dateYear) {
-        this.dateYear = dateYear;
+        return title;
     }
 
     public String getDescription() {
@@ -95,20 +49,15 @@ public class Task implements Parcelable{
         this.description = description;
     }
 
-    public String getLocation() {
-        return location;
+
+
+    public int getTimeSec() {
+
+        return timeSec;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public int getTimeHr() {
-        return timeHr;
-    }
-
-    public void setTimeHr(int timeHr) {
-        this.timeHr = timeHr;
+    public void setTimeSec(int timeSec) {
+        this.timeSec = timeSec;
     }
 
     public int getTimeMin() {
@@ -119,38 +68,63 @@ public class Task implements Parcelable{
         this.timeMin = timeMin;
     }
 
-    public int getTimeSec() {
-        return timeSec;
+    public int getTimeHr() {
+        return timeHr;
     }
 
-    public void setTimeSec(int timeSec) {
-        this.timeSec = timeSec;
+    public void setTimeHr(int timeHr) {
+        this.timeHr = timeHr;
     }
 
-    public String getTitle() {
-        return title;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(String identity) {
+        this.identity = identity;
+    }
+
+    public int getPreTaskRepetitionMinutes() {
+        return preTaskRepetitionMinutes;
+    }
+
+    public void setPreTaskRepetitionMinutes(int preTaskRepetitionMinutes) {
+        this.preTaskRepetitionMinutes = preTaskRepetitionMinutes;
+    }
+
+    public int getDateYear() {
+        return dateYear;
+    }
+
+    public void setDateYear(int dateYear) {
+        this.dateYear = dateYear;
+    }
+
+    public int getDateMonth() {
+        return dateMonth;
+    }
+
+    public void setDateMonth(int dateMonth) {
+        this.dateMonth = dateMonth;
+    }
+
+    public int getDateDay() {
+        return dateDay;
+    }
+
+    public void setDateDay(int dateDay) {
+        this.dateDay = dateDay;
     }
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    int timeHr;
-    int timeMin;
-    int timeSec;
-
-
-    String location,title,description;
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-
-
-
     }
 }

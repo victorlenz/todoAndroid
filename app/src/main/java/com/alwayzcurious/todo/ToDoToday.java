@@ -9,10 +9,12 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,7 +34,8 @@ public class ToDoToday extends AppCompatActivity {
     Calendar calendar,todaysCal;
     TodoAdapter todoAdapter;
     TextView mtvTaskCompleted,mTvTaskPending,date;
-
+    boolean flag=false;
+    ImageView nextDay,prevDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,49 @@ public class ToDoToday extends AppCompatActivity {
         myToolbar.setBackgroundColor(Color.WHITE);
         myToolbar.setTitleTextColor(Color.BLACK);
 
+        nextDay = (ImageView) findViewById(R.id.imageButton_nextDay);
+        prevDay = (ImageView) findViewById(R.id.imageButton_prevDay);
+
+        nextDay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+              //  taskList=null;
+               // listView.setAdapter(null);
+                taskList = manager.getThisDayTask(calendar.get(Calendar.DAY_OF_MONTH),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE),
+                        calendar.get(Calendar.SECOND));
+                Log.d("TODO","lenth of task "+taskList.size());
+                todoAdapter = new TodoAdapter(ToDoToday.this,taskList);
+                listView.setAdapter(todoAdapter);
+                todoAdapter.notifyDataSetChanged();
+                date.setText(String.format(Locale.ENGLISH,"%02d - %02d - %d",calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR) ));
+            }
+        });
+
+        prevDay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calendar.add(Calendar.DAY_OF_MONTH,-1);
+             //   taskList =null;
+             //   listView.setAdapter(null);
+                taskList = manager.getThisDayTask(calendar.get(Calendar.DAY_OF_MONTH),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE),
+                        calendar.get(Calendar.SECOND));
+                Log.d("TODO","lenth of task "+taskList.size());
+                todoAdapter = new TodoAdapter(ToDoToday.this,taskList);
+                listView.setAdapter(todoAdapter);
+                todoAdapter.notifyDataSetChanged();
+                date.setText(String.format(Locale.ENGLISH,"%02d - %02d - %d",calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR) ));
+            }
+        });
+
         todaysCal = Calendar.getInstance();
         calendar = Calendar.getInstance();
         taskList = manager.getThisDayTask(calendar.get(Calendar.DAY_OF_MONTH),
@@ -64,7 +110,7 @@ public class ToDoToday extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.todo_listView_details);
         listView.setAdapter(todoAdapter);
         todoAdapter.notifyDataSetChanged();
-
+        flag = false;
         mtvTaskCompleted = (TextView) findViewById(R.id.textView_taskCompleted);
         mTvTaskPending = (TextView) findViewById(R.id.textView_taskPending);
         date =(TextView) findViewById(R.id.textView_dateSwitch);
@@ -76,11 +122,11 @@ public class ToDoToday extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-               ArrayList<Task> tasks = new ArrayList<Task>();
-                tasks.add(0,(Task) view.getTag(R.id.textView_Body));
-                Intent intent = new Intent(ToDoToday.this,ViewTask.class);
-                intent.putParcelableArrayListExtra("task",tasks);
-                startActivity(intent);
+
+                Intent t=  new Intent(ToDoToday.this,ViewTask.class);
+                t.putExtra("id",((TextView)(view.findViewById(R.id.event_id))).getText().toString());
+                startActivity(t);
+                finish();
 
             }
         });
@@ -88,6 +134,42 @@ public class ToDoToday extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main_activity, menu);
+        return true;
+    }
+
+   /* @Override
+    protected void onResume() {
+        super.onResume();
+        manager = new DatabaseManager(this);
+        mtvTaskCompleted.setText(manager.getCompletedTask());
+        mTvTaskPending.setText(manager.getPendingTask());
+       if (flag) {
+           taskList.clear();
+           taskList = manager.getThisDayTask(calendar.get(Calendar.DAY_OF_MONTH),
+                   calendar.get(Calendar.MONTH),
+                   calendar.get(Calendar.YEAR),
+                   calendar.get(Calendar.HOUR_OF_DAY),
+                   calendar.get(Calendar.MINUTE),
+                   calendar.get(Calendar.SECOND));
+       }
+        todoAdapter = new TodoAdapter(ToDoToday.this,taskList);
+        todoAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        flag=true;
+    }*/
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(R.id.action_add == item.getItemId()) {
+            startActivity(new Intent(ToDoToday.this, CreateTask.class));
+            finish();
+        }
+
         return true;
     }
 
