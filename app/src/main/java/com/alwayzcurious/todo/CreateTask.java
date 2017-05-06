@@ -4,11 +4,13 @@ import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.annotation.StringDef;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -40,7 +42,7 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
     EditText taskTitle,taskDescription, preTaskRepFreq,preTaskRepFreqMin;
     ImageView taskBackground;
     AlarmManager alarmManager;
-    Calendar taskCalendar,tempTaskCalendar;
+    Calendar taskCalendar,tempTaskCalendar,old;
     SimpleDateFormat simpleDateFormat;
     static  String MY_TODO_REMINDER_INTENT_ACTION = "com.alwayzcurious.todo.reminder.";
 
@@ -59,7 +61,7 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
 
         taskCalendar = Calendar.getInstance();
         simpleDateFormat = new SimpleDateFormat("HH:mm:ss:SS",Locale.ENGLISH);
-
+        old = Calendar.getInstance();
         // Update the action bar title with the TypefaceSpan instance
 
         myToolbar.setTitle(s);
@@ -81,6 +83,10 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
         findViewById(R.id.imageButtonSetTime).setOnClickListener(this);
         findViewById(R.id.imageButtonCreateTask).setOnClickListener(this);
         findViewById(R.id.ll1_taskBackgroundImage).setBackgroundColor(Color.argb(0,0,0,0));
+
+
+        mTvDate.setText(String.format(Locale.ENGLISH,"%s, %s %02d",getCalenderString(old).day, getCalenderString(old).month,old.get(Calendar.DAY_OF_MONTH)));
+        mTvTime.setText(String.format(Locale.ENGLISH,"%02d:%02d %s ",old.get(Calendar.HOUR_OF_DAY),old.get(Calendar.MINUTE),String.valueOf( (old.get(Calendar.AM_PM)) == Calendar.PM ? "PM":"AM")));
 
 
 
@@ -208,6 +214,29 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
                // intent.setAction(MY_TODO_REMINDER_INTENT_ACTION+"1");
 
 
+                if (!validateInput())
+                {
+                    AlertDialog.Builder dialogue= new AlertDialog.Builder(CreateTask.this);
+                    dialogue.setMessage("Title & Description can't be less than 4 character and can't contain special character");
+                    dialogue.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                    dialogue.show();
+                    return;
+                }
+
+                if(mTvLocation.getText().length() ==0)
+                {
+                    mTvLocation.setText("Not Available");
+                }
+
+                if(preTaskRepFreq.getText().toString().length() ==0 )
+                    preTaskRepFreq.setText("0");
+                if(preTaskRepFreqMin.getText().toString().length() ==0)
+                    preTaskRepFreqMin.setText("0");
 
                 //TODO apply validations
 
@@ -233,30 +262,57 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
                     task.setPreTaskRepetitionMinutes(0);
                     task.setPreTaskFrequency(0);
                 }
-
-               String lastId= databaseManager.createTask(task);
+                alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                 String lastId= databaseManager.createTask(task);
                 Intent intent = new Intent(CreateTask.this,MyReceiver.class);
                 intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                 intent.putExtra("id",lastId);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(CreateTask.this,Integer.parseInt(lastId),intent,0);
-                alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                alarmManager.set(AlarmManager.RTC_WAKEUP,taskCalendar.getTimeInMillis(),pendingIntent);
+
                 Log.d( "TODO","date test set "+ simpleDateFormat.format(taskCalendar.getTimeInMillis()));
 
                 //TODO fix the bug millisecond problem
 
+                int x= lastId.length();
+                int seedIdentity = Integer.parseInt(task.getIdentity());
+                while (x-- !=0)
+                {
+                    seedIdentity*=10;
+                }
+
+                seedIdentity = Integer.parseInt(lastId)+seedIdentity;
 
 
-                Log.d("TODO","calendar ="+taskCalendar.get(Calendar.HOUR_OF_DAY)+" "+taskCalendar.get(Calendar.MINUTE)
-                        +","+getCalenderString(taskCalendar).month +" "+getCalenderString(taskCalendar).day);
-                Log.d("TODO", (""+ alarmManager.getNextAlarmClock().getTriggerTime()));
-                Log.d( "TODO","date test 1"+ simpleDateFormat.format(alarmManager.getNextAlarmClock().getTriggerTime()));
-                Toast.makeText(this,"alarm startet@",Toast.LENGTH_LONG).show();
+
+                for(int i=0;i<Integer.parseInt(preTaskRepFreq.getText().toString());i++)
+                {
+                    Calendar calendar = (Calendar) taskCalendar.clone();
+                    calendar.add(Calendar.MINUTE, - Integer.parseInt(preTaskRepFreqMin.getText().toString()));
+                    PendingIntent pendingIntentRep = PendingIntent.getBroadcast(CreateTask.this,seedIdentity+i,intent,0);
+                    alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntentRep);
+                    Toast.makeText(this,"alarm started@"+(seedIdentity+i),Toast.LENGTH_LONG).show();
+                }
+
                 finish();
 
             }
         }
 
+
+    }
+
+    private boolean validateInput() {
+
+      if( taskTitle.getText().toString().length() >2 &&
+              taskDescription.getText().toString().length()>2 &&
+
+              taskTitle.getText().toString().matches("^[a-zA-Z]{4,}$")
+              && taskDescription.getText().toString().matches("^[a-zA-Z]{4,}$")
+
+              )
+        return true;
+
+        return false;
 
     }
 
@@ -305,7 +361,7 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
 
     }
 
-    public String generateIdentity() {
+   static public String generateIdentity() {
 
         Integer integer = new Random().nextInt(999999999);
         return String.valueOf(integer);

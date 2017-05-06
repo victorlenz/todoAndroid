@@ -4,9 +4,11 @@ import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.alwayzcurious.todo.Extras.DatabaseManager;
 import com.alwayzcurious.todo.Extras.Task;
@@ -38,7 +41,7 @@ public class EditTask extends AppCompatActivity implements View.OnClickListener{
     AlarmManager alarmManager;
     Calendar taskCalendar,tempTaskCalendar;
     SimpleDateFormat simpleDateFormat;
-
+    Task task1;
     DatabaseManager databaseManager;
 
     @Override
@@ -58,7 +61,7 @@ public class EditTask extends AppCompatActivity implements View.OnClickListener{
         preTaskRepFreq = (EditText) findViewById(R.id.editTex_preTaskFreq);
         preTaskRepFreqMin =(EditText) findViewById(R.id.edittext_preTaskinterval);
 
-        Task task1= databaseManager.getTaskById(getIntent().getStringExtra("taskId"));
+        task1= databaseManager.getTaskById(getIntent().getStringExtra("taskId"));
         mTvDate.setText(String.format(Locale.ENGLISH, "%s, %s %02d", getDay(task1.getDateDay()), getMonth(task1.getDateMonth()), task1.getDateDay()));
         mTvTime.setText(String.format(Locale.ENGLISH,"%02d :%02d",task1.getTimeHr(),task1.getTimeMin()));
         mTvLocation.setText(task1.getLocation());
@@ -114,9 +117,6 @@ public class EditTask extends AppCompatActivity implements View.OnClickListener{
                                 tempTaskCalendar.set(Calendar.MONTH,month);
                                 tempTaskCalendar.set(Calendar.DAY_OF_MONTH,day);
 
-                                Log.d( "TODO","date test "+ simpleDateFormat.format(tempTaskCalendar.getTimeInMillis()));
-                                Log.d("TODO","calendar ="+tempTaskCalendar.get(Calendar.HOUR_OF_DAY)+" "+tempTaskCalendar.get(Calendar.MINUTE)
-                                        +","+getCalenderString(tempTaskCalendar).month +" "+getCalenderString(tempTaskCalendar).day);
 
                                 mTvDate.setText(String.format(Locale.ENGLISH,"%s %s %02d",getCalenderString(tempTaskCalendar).day, getCalenderString(tempTaskCalendar).month,day));
                             }
@@ -149,10 +149,10 @@ public class EditTask extends AppCompatActivity implements View.OnClickListener{
                         taskCalendar.set(Calendar.MILLISECOND,0);
 
 
-                        Log.d( "TODO","date test "+ simpleDateFormat.format(taskCalendar.getTimeInMillis()));
+                        /*Log.d( "tTODO","date test "+ simpleDateFormat.format(taskCalendar.getTimeInMillis()));
 
-                        Log.d("TODO","calendar ="+taskCalendar.get(Calendar.HOUR_OF_DAY)+" "+taskCalendar.get(Calendar.MINUTE)
-                                +","+getCalenderString(taskCalendar).month +" "+getCalenderString(taskCalendar).day);
+                        Log.d("tTODO","calendar ="+taskCalendar.get(Calendar.HOUR_OF_DAY)+" "+taskCalendar.get(Calendar.MINUTE)
+                                +","+getCalenderString(taskCalendar).month +" "+getCalenderString(taskCalendar).day);*/
 
                     }
                 },c1.get(Calendar.HOUR_OF_DAY),c1.get(Calendar.MINUTE),false);
@@ -169,15 +169,54 @@ public class EditTask extends AppCompatActivity implements View.OnClickListener{
 
 
 
+                if (!validateInput())
+                {
+                    AlertDialog.Builder dialogue= new AlertDialog.Builder(EditTask.this);
+                    dialogue.setMessage("Title & Description can't be less than 4 character and can't contain special character");
+                    dialogue.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                    dialogue.show();
+                    return;
+                }
+
+                if(mTvLocation.getText().length() ==0)
+                {
+                    mTvLocation.setText("Not Available");
+                }
+
+                if(preTaskRepFreq.getText().toString().length() ==0 )
+                    preTaskRepFreq.setText("0");
+                if(preTaskRepFreqMin.getText().toString().length() ==0)
+                    preTaskRepFreqMin.setText("0");
+
+
+
+
                 //TODO fix the bug millisecond problem
 
+                int x= String.valueOf(task1.getId()).length();
+                int seedIdentity = Integer.parseInt(task1.getIdentity());
+                while (x-- !=0)
+                {
+                    seedIdentity*=10;
+                }
+                seedIdentity = task1.getId()+seedIdentity;
 
-                Intent intentCancel = new Intent();
-                intentCancel.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-                intentCancel.putExtra("id",getIntent().getStringExtra("taskId"));
-                PendingIntent pendingIntentforCancel = PendingIntent.getBroadcast(EditTask.this,Integer.parseInt(getIntent().getStringExtra("taskId")), intentCancel,PendingIntent.FLAG_UPDATE_CURRENT);
-                alarmManager = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
-                alarmManager.cancel(pendingIntentforCancel);
+                for(int i=0;i<task1.getPreTaskFrequency();i++)
+                {
+                    Intent intentCancel = new Intent();
+                    intentCancel.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                    intentCancel.putExtra("id",getIntent().getStringExtra("taskId"));
+                    PendingIntent pendingIntentforCancel = PendingIntent.getBroadcast(EditTask.this,seedIdentity+i, intentCancel,PendingIntent.FLAG_UPDATE_CURRENT);
+                    alarmManager = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+                    alarmManager.cancel(pendingIntentforCancel);
+                    Toast.makeText(EditTask.this,"cancelled@"+(seedIdentity+i),Toast.LENGTH_SHORT).show();
+                }
+
 
                 //TODO apply validations
 
@@ -192,6 +231,7 @@ public class EditTask extends AppCompatActivity implements View.OnClickListener{
                 task.setTitle(taskTitle.getText().toString());
                 task.setLocation(mTvLocation.getText().toString());
                 task.setDescription(taskDescription.getText().toString());
+                task.setIdentity(CreateTask.generateIdentity());
                //TODO do this
                // task.setIdentity(generateIdentity());
 
@@ -204,20 +244,58 @@ public class EditTask extends AppCompatActivity implements View.OnClickListener{
                     task.setPreTaskRepetitionMinutes(0);
                     task.setPreTaskFrequency(0);
                 }
+
                 databaseManager.deleteTask(getIntent().getStringExtra("taskId"));
-               String id= databaseManager.createTask(task);
+                String id= databaseManager.createTask(task);
+
                 Intent intent = new Intent(EditTask.this,MyReceiver.class);
                 intent.putExtra("id",id);
                 intent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
                 // intent.setAction(MY_TODO_REMINDER_INTENT_ACTION+"1");
+
+
+                 x= String.valueOf(task.getId()).length();
+                 seedIdentity = Integer.parseInt(task.getIdentity());
+                while (x--!=0)
+                {
+                    seedIdentity*=10;
+                }
+                seedIdentity = Integer.parseInt(id)+seedIdentity;
+
+
+                for(int i=0;i<Integer.parseInt(preTaskRepFreq.getText().toString());i++)
+                {
+                    Calendar calendar = (Calendar) taskCalendar.clone();
+                    calendar.add(Calendar.MINUTE, - Integer.parseInt(preTaskRepFreqMin.getText().toString()));
+                    PendingIntent pendingIntentRep = PendingIntent.getBroadcast(EditTask.this,seedIdentity+i,intent,0);
+                    alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntentRep);
+                    Toast.makeText(this,"alarm started@"+(seedIdentity+i),Toast.LENGTH_SHORT).show();
+                }
+
+               /*
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(EditTask.this,Integer.parseInt(id),intent,0);
                 alarmManager.set(AlarmManager.RTC_WAKEUP,taskCalendar.getTimeInMillis(),pendingIntent);
-
+*/
                 finish();
 
             }
         }
 
+
+    }
+
+    private boolean validateInput() {
+
+        if( taskTitle.getText().toString().length() >3 &&
+                taskDescription.getText().toString().length()>3 &&
+
+                taskTitle.getText().toString().matches("^[a-zA-Z]{4,}$")
+                && taskDescription.getText().toString().matches("^[a-zA-Z]{4,}$")
+
+                )
+            return true;
+
+        return false;
 
     }
     class Date1{

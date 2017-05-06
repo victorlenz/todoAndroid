@@ -142,7 +142,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 task.dateYear = Integer.parseInt(cursor.getString(7));
                 task.dateDay = Integer.parseInt(cursor.getString(8));
                 task.timeHr = Integer.parseInt(cursor.getString(9));
-                task.identity = cursor.getString(10);
+                task.identity = cursor.getString(9);
                 task.preTaskFrequency = Integer.parseInt(cursor.getString(15));
                 task.preTaskRepetitionMinutes = Integer.parseInt(cursor.getString(14));
 
@@ -186,6 +186,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 task.dateMonth = Integer.parseInt(cursor.getString(6));
                 task.dateYear = Integer.parseInt(cursor.getString(7));
                 task.dateDay = Integer.parseInt(cursor.getString(8));
+                task.identity = cursor.getString(9);
                 task.preTaskFrequency = Integer.parseInt(cursor.getString(15));
                 task.preTaskRepetitionMinutes = Integer.parseInt(cursor.getString(14));
 

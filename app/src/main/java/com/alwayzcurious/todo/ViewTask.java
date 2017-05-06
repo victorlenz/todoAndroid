@@ -1,5 +1,7 @@
 package com.alwayzcurious.todo;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import com.alwayzcurious.todo.Extras.DatabaseManager;
 import com.alwayzcurious.todo.Extras.Task;
+import com.alwayzcurious.todo.Extras.Validator;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -31,7 +34,7 @@ public class ViewTask extends AppCompatActivity implements View.OnClickListener 
     DatabaseManager databaseManager;
 
     AlertDialog.Builder alertDialog;
-
+    AlarmManager alarmManager;
     String taskId;
 
     @Override
@@ -85,6 +88,7 @@ public class ViewTask extends AppCompatActivity implements View.OnClickListener 
         deleteTask.setOnClickListener(this);
 
         findViewById(R.id.ll1_taskBackgroundImage).setBackgroundColor(Color.argb(0,0,0,0));
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
 
     }
@@ -163,6 +167,27 @@ public class ViewTask extends AppCompatActivity implements View.OnClickListener 
                         finish();
                     }
                 });
+                DatabaseManager databaseManager = new DatabaseManager(ViewTask.this);
+                Task task1 = databaseManager.getTaskById(taskId);
+
+                int x= String.valueOf(task1.getId()).length();
+                int seedIdentity = Integer.parseInt(task1.getIdentity());
+                while (x-- !=0)
+                {
+                    seedIdentity*=10;
+                }
+                seedIdentity = task1.getId()+seedIdentity;
+
+                for(int i=0;i<task1.getPreTaskFrequency();i++)
+                {
+                    Intent intentCancel = new Intent();
+                    intentCancel.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                    intentCancel.putExtra("id",getIntent().getStringExtra("taskId"));
+                    PendingIntent pendingIntentforCancel = PendingIntent.getBroadcast(ViewTask.this,seedIdentity+i, intentCancel,PendingIntent.FLAG_UPDATE_CURRENT);
+                    alarmManager = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+                    alarmManager.cancel(pendingIntentforCancel);
+                    Toast.makeText(ViewTask.this,"deleted@"+(seedIdentity+i),Toast.LENGTH_SHORT).show();
+                }
 
                 alertDialog.setNegativeButton("No",null);
 
