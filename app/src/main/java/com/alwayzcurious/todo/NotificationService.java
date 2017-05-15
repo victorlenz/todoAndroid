@@ -5,7 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.provider.ContactsContract;
+import android.media.Ringtone;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -22,7 +22,7 @@ public class NotificationService extends IntentService {
         super("com.alwayzcurious.todo.service");
     }
 
-    DatabaseManager databaseManager;
+    DatabaseManager databaseManager;Ringtone ringtone;
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -40,24 +40,41 @@ public class NotificationService extends IntentService {
         String msg = task.getDescription(),title = task.getTitle();
 
 
+
+
         Log.d("AlarmService", "Preparing to send notification...: " + msg);
-      NotificationManager  alarmNotificationManager = (NotificationManager) this
+         NotificationManager  alarmNotificationManager = (NotificationManager) this
                 .getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Intent intent = new Intent(this,ViewTask.class);
-        intent.putExtra("id",id);
+        Intent intent1 = new Intent(this,ViewTask.class);
+        intent1.putExtra("id",id);
+        intent1.putExtra("launched",true);
+        intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
+
+
+        startActivity(intent1);
+
+        Intent intent2 = new Intent(this,ViewTask.class);
+        intent2.putExtra("id",id);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                intent, 0);
+                intent2, 0);
+
 
         NotificationCompat.Builder alamNotificationBuilder = new NotificationCompat.Builder(
-                this).setContentTitle(title).setSmallIcon(R.drawable.ic_action_add)
+                this).setContentTitle(title).setSmallIcon(R.drawable.logo)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
-                .setContentText(msg);
-
+                .setContentText(msg).setAutoCancel(true)
+                ;
 
         alamNotificationBuilder.setContentIntent(contentIntent);
         alarmNotificationManager.notify(1, alamNotificationBuilder.build());
         Log.d("AlarmService", "Notification sent.");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
     }
 }

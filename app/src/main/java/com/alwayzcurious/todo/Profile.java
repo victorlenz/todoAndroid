@@ -70,13 +70,25 @@ public class Profile extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-               if(Validator.validateLength(uName.getText().toString(),4) && Validator.validateSpecialChar(uName.getText().toString()))
+              //  Toast.makeText(Profile.this,"min length 4 and no special char",Toast.LENGTH_LONG).show();
+
+                if(!isValidDOB())
                 {
-                    Toast.makeText(Profile.this,"min length 4 and no special char",Toast.LENGTH_LONG);
+
+                    return;
+
+                }
+
+                if(!isValidName(uName.getText().toString()) || (uName.getText().toString().length() <4))
+                {
+                    alertDialogue.setIndeterminate(false);
+                    alertDialogue.setMessage("Hmm! No special char in name and More than 4 char");
+                    alertDialogue.show();
                     return;
                 }
 
-
+                alertDialogue.setIndeterminate(true);
+                alertDialogue.setMessage("Please Wait While we Build your Profile");
                 alertDialogue.show();
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().
                         child("users/"+StaticInformation.FIREBASE_UID+"/birthday");
@@ -89,7 +101,7 @@ public class Profile extends AppCompatActivity {
                                 {
                                     startActivity(new Intent(getApplicationContext(),MainActivity.class));
                                     alertDialogue.dismiss();
-                                    finish();
+                                     finish();
                                 }
 
                             }
@@ -120,6 +132,7 @@ public class Profile extends AppCompatActivity {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(circleImageView);
         Log.d("test",getIntent().getExtras().get("image").toString());
+
         currentDOB = (TextView) findViewById(R.id.textViewDOB);
         setDOB();
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -143,15 +156,47 @@ public class Profile extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                         currentDOB.setText(String.format(Locale.ENGLISH,"%2d / %02d / %4d",day,
-                                month,year));
+                                month+1,year));
+                        c.set(year,month,day);
                     }
                 },c.get(Calendar.YEAR),
-                        c.get(Calendar.MONTH)+1,
+                        c.get(Calendar.MONTH),
                         c.get(Calendar.DAY_OF_MONTH));
 
                 datePickerDialog.show();
             }
         });
+    }
+
+    private boolean isValidName(String s) {
+        if(s.matches("^[a-zA-Z\\s]*$"))
+            return true;
+        else
+            Log.d("Profile","Regex not match");
+            return false;
+    }
+
+    private boolean isValidDOB() {
+        Calendar today = Calendar.getInstance();
+
+        if(c.get(Calendar.YEAR) <= today.get(Calendar.YEAR)) {
+            if (c.get(Calendar.MONTH) <= today.get(Calendar.MONTH))
+                if (c.get(Calendar.DAY_OF_MONTH) < today.get(Calendar.DAY_OF_MONTH)) {
+                    Log.d("Profile", "true=>" + c.get(Calendar.YEAR) + "=>" + today.get(Calendar.YEAR));
+                    Log.d("Profile", "true=>" + c.get(Calendar.MONTH) + "=>" + today.get(Calendar.MONTH));
+                    Log.d("Profile", "true=>" + c.get(Calendar.DAY_OF_MONTH) + "<" + today.get(Calendar.DAY_OF_MONTH));
+
+                    return true;
+                }
+
+        }
+
+        alertDialogue.setMessage("Hmm! Not a Valid Birthday");
+        alertDialogue.show();
+        Log.d("Problem","false=>"+c.get(Calendar.YEAR) +"<="+ today.get(Calendar.YEAR)+" " +(c.get(Calendar.YEAR) <= today.get(Calendar.YEAR)));
+        Log.d("Problem","false=>"+ c.get(Calendar.MONTH) +"<="+today.get(Calendar.MONTH)+" "+(c.get(Calendar.MONTH) <= today.get(Calendar.MONTH)));
+        Log.d("Problem","false=>"+ c.get(Calendar.DAY_OF_MONTH) +"<"+today.get(Calendar.DAY_OF_MONTH)+" "+(c.get(Calendar.DAY_OF_MONTH) < today.get(Calendar.DAY_OF_MONTH)));
+            return false;
     }
 
     @Override

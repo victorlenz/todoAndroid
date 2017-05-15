@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.alwayzcurious.todo.About"
+    android:orientation="vertical">
+
+
+
+    <com.alwayzcurious.todo.Extras.FontTextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ABOUT"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        tools:layout_editor_absoluteX="162dp"
+        tools:layout_editor_absoluteY="30dp" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/acerc"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:gravity="center">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/pradeep"
+                />
+            <com.alwayzcurious.todo.Extras.FontTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pradeep Jha \n(HOD CS)"
+                android:textSize="20sp"
+
+                android:layout_marginBottom="10dp"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/shilpi"
+                />
+            <com.alwayzcurious.todo.Extras.FontTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shilpi Mishra \n (Dept. Hod CS)"
+                android:layout_marginBottom="10dp"
+                android:textSize="20sp"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/sudhanshu"
+                />
+            <com.alwayzcurious.todo.Extras.FontTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sudhanshu Vashistha \n (Assis. Professor CS)"
+                android:layout_marginBottom="10dp"
+                android:textSize="20sp"/>
+
+            <com.alwayzcurious.todo.Extras.FontTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Submitted By"
+                android:textAlignment="center"
+                android:textStyle="bold"/>
+            <com.alwayzcurious.todo.Extras.FontTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Vivek Kumar (13EAYCS055)\n &amp; Nikita Singhal (13EAYCS028)"
+                android:textSize="20sp"
+                android:textAlignment="center"/>
+            <com.alwayzcurious.todo.Extras.FontTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="\nFor the Fullfilment of Degree (BTech) CSE"
+                android:textSize="20sp"/>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

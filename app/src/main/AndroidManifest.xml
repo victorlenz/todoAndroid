@@ -12,12 +12,12 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".SignUp" />
-        <activity android:name=".Profile" />
+        <activity android:name=".Profile"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,16 +49,15 @@
             android:name=".NotificationService"
             android:enabled="true" />
 
-        <receiver
-            android:name=".MyReceiver"
-           >
+        <receiver android:name=".MyReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
         <activity android:name=".ViewTask" />
-        <activity android:name=".EditTask"/>
+        <activity android:name=".EditTask" />
+        <activity android:name=".About"></activity>
     </application>
 
 </manifest>

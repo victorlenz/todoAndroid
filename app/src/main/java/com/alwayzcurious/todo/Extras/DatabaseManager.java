@@ -105,6 +105,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 task.dateDay = Integer.parseInt(cursor.getString(8));
                 task.identity = cursor.getString(9);
                 task.preTaskFrequency = Integer.parseInt(cursor.getString(15));
+                task.location= cursor.getString(16);
                 task.preTaskRepetitionMinutes = Integer.parseInt(cursor.getString(14));
 
 

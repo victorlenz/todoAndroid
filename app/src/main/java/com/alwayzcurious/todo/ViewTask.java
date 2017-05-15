@@ -5,10 +5,14 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -36,6 +40,8 @@ public class ViewTask extends AppCompatActivity implements View.OnClickListener 
     AlertDialog.Builder alertDialog;
     AlarmManager alarmManager;
     String taskId;
+    Calendar calendar;
+     Ringtone ringtone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +51,26 @@ public class ViewTask extends AppCompatActivity implements View.OnClickListener 
         String id=  getIntent().getStringExtra("id");
 
 
+        if(getIntent().getBooleanExtra("launched",false))
+        {
+            Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            if (alarmUri == null) {
+                alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            }
+
+             ringtone = RingtoneManager.getRingtone(getApplicationContext(), alarmUri);
+            ringtone.stop();
+            ringtone.play();
+        }
+
+        Log.d("TODO","ViewTask id "+id);
+
+        calendar = Calendar.getInstance();
+
+
         Task task1 = databaseManager.getTaskById(id);
+
+        calendar.set(task1.getDateYear(),task1.getDateMonth(),task1.getDateDay(),task1.getTimeHr(),task1.getTimeMin());
         Log.e("ViewTask","id = "+id +" task=");
 
         mTvDate = (TextView) findViewById(R.id.textViewDate);
@@ -58,8 +83,9 @@ public class ViewTask extends AppCompatActivity implements View.OnClickListener 
         preTaskRepFreq = (TextView) findViewById(R.id.editTex_preTaskRepFreq);
         preTaskRepFreqMin =(TextView) findViewById(R.id.edittext_interval);
 
+        Log.d("TODO","day ="+task1.getDateDay());
 
-        mTvDate.setText(String.format(Locale.ENGLISH, "%s, %s %02d", getDay(task1.getDateDay()), getMonth(task1.getDateMonth()), task1.getDateYear()));
+        mTvDate.setText(String.format(Locale.ENGLISH, "%s, %s %02d", getDay(calendar.get(Calendar.DAY_OF_WEEK)), getMonth(task1.getDateMonth()), task1.getDateYear()));
         mTvTime.setText(String.format(Locale.ENGLISH,"%02d :%02d",task1.getTimeHr(),task1.getTimeMin()));
         mTvLocation.setText(task1.getLocation());
         taskBackground.setImageURI(null);
@@ -93,6 +119,20 @@ public class ViewTask extends AppCompatActivity implements View.OnClickListener 
 
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if(event.getAction() == KeyEvent.ACTION_DOWN) {
+
+            if(keyCode== KeyEvent.KEYCODE_VOLUME_DOWN || keyCode==KeyEvent.KEYCODE_VOLUME_UP)
+              try{
+                  ringtone.stop();
+              }catch (Exception e){}
+            Log.i("ViewTask","stopping ring");
+        }
+
+        return  super.onKeyDown(keyCode,event);
+    }
 
     static String getDay(int day) {
 
@@ -161,34 +201,40 @@ public class ViewTask extends AppCompatActivity implements View.OnClickListener 
                 alertDialog.setIcon(R.mipmap.ic_cross);
                 alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onClick(DialogInterface dialogInterface, int j) {
+                        DatabaseManager databaseManager = new DatabaseManager(ViewTask.this);
+                        Task task1 = databaseManager.getTaskById(taskId);
+
+                        int x= String.valueOf(task1.getId()).length();
+                        int seedIdentity = Integer.parseInt(task1.getIdentity());
+                        while (x-- !=0)
+                        {
+                            seedIdentity*=10;
+                        }
+                        seedIdentity = task1.getId()+seedIdentity;
+
+                        for(int i=0;i<task1.getPreTaskFrequency();i++)
+                        {
+                            Intent intentCancel = new Intent();
+                            intentCancel.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                            intentCancel.putExtra("id",getIntent().getStringExtra("taskId"));
+                            PendingIntent pendingIntentforCancel = PendingIntent.getBroadcast(ViewTask.this,seedIdentity+i, intentCancel,PendingIntent.FLAG_UPDATE_CURRENT);
+                            alarmManager = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+                            alarmManager.cancel(pendingIntentforCancel);
+                            Toast.makeText(ViewTask.this,"deleted@"+(seedIdentity+i),Toast.LENGTH_SHORT).show();
+                        }
+
                         databaseManager.deleteTask(taskId);
                         Toast.makeText(ViewTask.this,"Task Deleted",Toast.LENGTH_LONG).show();
                         finish();
                     }
+
+
                 });
-                DatabaseManager databaseManager = new DatabaseManager(ViewTask.this);
-                Task task1 = databaseManager.getTaskById(taskId);
 
-                int x= String.valueOf(task1.getId()).length();
-                int seedIdentity = Integer.parseInt(task1.getIdentity());
-                while (x-- !=0)
-                {
-                    seedIdentity*=10;
-                }
-                seedIdentity = task1.getId()+seedIdentity;
-
-                for(int i=0;i<task1.getPreTaskFrequency();i++)
-                {
-                    Intent intentCancel = new Intent();
-                    intentCancel.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-                    intentCancel.putExtra("id",getIntent().getStringExtra("taskId"));
-                    PendingIntent pendingIntentforCancel = PendingIntent.getBroadcast(ViewTask.this,seedIdentity+i, intentCancel,PendingIntent.FLAG_UPDATE_CURRENT);
-                    alarmManager = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
-                    alarmManager.cancel(pendingIntentforCancel);
-                    Toast.makeText(ViewTask.this,"deleted@"+(seedIdentity+i),Toast.LENGTH_SHORT).show();
-                }
-
+               try{
+                   ringtone.stop();
+               }catch (Exception ignored){}
                 alertDialog.setNegativeButton("No",null);
 
                 alertDialog.show();
@@ -211,5 +257,13 @@ public class ViewTask extends AppCompatActivity implements View.OnClickListener 
             } break;
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try{
+            ringtone.stop();
+        }catch (Exception ignored){}
     }
 }

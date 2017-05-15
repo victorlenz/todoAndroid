@@ -42,12 +42,12 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
     EditText taskTitle,taskDescription, preTaskRepFreq,preTaskRepFreqMin;
     ImageView taskBackground;
     AlarmManager alarmManager;
-    Calendar taskCalendar,tempTaskCalendar,old;
+    Calendar taskCalendar,tempTaskCalendar,old; Calendar calendar;
     SimpleDateFormat simpleDateFormat;
     static  String MY_TODO_REMINDER_INTENT_ACTION = "com.alwayzcurious.todo.reminder.";
 
     DatabaseManager databaseManager = new DatabaseManager(this);
-
+    AlertDialog.Builder dialogue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +88,14 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
         mTvDate.setText(String.format(Locale.ENGLISH,"%s, %s %02d",getCalenderString(old).day, getCalenderString(old).month,old.get(Calendar.DAY_OF_MONTH)));
         mTvTime.setText(String.format(Locale.ENGLISH,"%02d:%02d %s ",old.get(Calendar.HOUR_OF_DAY),old.get(Calendar.MINUTE),String.valueOf( (old.get(Calendar.AM_PM)) == Calendar.PM ? "PM":"AM")));
 
+         dialogue= new AlertDialog.Builder(CreateTask.this);
+        dialogue.setMessage("Title & Description & Location can't be less than 4 character and can't contain special character");
+        dialogue.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
 
+            }
+        });
 
     }
 
@@ -108,6 +115,7 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
             t.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(t,999);
         }
+
         return false;
     }
 
@@ -216,21 +224,23 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
 
                 if (!validateInput())
                 {
-                    AlertDialog.Builder dialogue= new AlertDialog.Builder(CreateTask.this);
-                    dialogue.setMessage("Title & Description can't be less than 4 character and can't contain special character");
-                    dialogue.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
 
-                        }
-                    });
                     dialogue.show();
                     return;
                 }
 
+
+
                 if(mTvLocation.getText().length() ==0)
                 {
                     mTvLocation.setText("Not Available");
+                }else{
+                    if(!mTvLocation.getText().toString().matches("[a-zA-Z]+( [a-zA-Z]+)*$"))
+                    {
+                        dialogue.show();
+                        return;
+                    }
+
                 }
 
                 if(preTaskRepFreq.getText().toString().length() ==0 )
@@ -260,7 +270,7 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
                 }
                 else {
                     task.setPreTaskRepetitionMinutes(0);
-                    task.setPreTaskFrequency(0);
+                    task.setPreTaskFrequency(1);
                 }
                 alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                  String lastId= databaseManager.createTask(task);
@@ -282,12 +292,12 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
 
                 seedIdentity = Integer.parseInt(lastId)+seedIdentity;
 
+                calendar = (Calendar) taskCalendar.clone();
 
-
-                for(int i=0;i<Integer.parseInt(preTaskRepFreq.getText().toString());i++)
+                for(int i=0;i<task.getPreTaskFrequency();i++)
                 {
-                    Calendar calendar = (Calendar) taskCalendar.clone();
-                    calendar.add(Calendar.MINUTE, - Integer.parseInt(preTaskRepFreqMin.getText().toString()));
+
+                    calendar.add(Calendar.MINUTE, - task.getPreTaskRepetitionMinutes());
                     PendingIntent pendingIntentRep = PendingIntent.getBroadcast(CreateTask.this,seedIdentity+i,intent,0);
                     alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntentRep);
                     Toast.makeText(this,"alarm started@"+(seedIdentity+i),Toast.LENGTH_LONG).show();
@@ -300,21 +310,37 @@ public class CreateTask extends AppCompatActivity implements View.OnClickListene
 
 
     }
-
     private boolean validateInput() {
 
-      if( taskTitle.getText().toString().length() >2 &&
-              taskDescription.getText().toString().length()>2 &&
+        if( taskTitle.getText().toString().length() <15 &&
+                taskDescription.getText().toString().length() <25 &&
 
-              taskTitle.getText().toString().matches("^[a-zA-Z]{4,}$")
-              && taskDescription.getText().toString().matches("^[a-zA-Z]{4,}$")
+                taskTitle.getText().toString().matches("^[a-zA-Z]+( [a-zA-Z]+)*$")
+                && taskDescription.getText().toString().matches("^[a-zA-Z]+( [a-zA-Z]+)*")
+                &&
+                taskTitle.getText().toString().length() >4 &&
+                taskDescription.getText().toString().length() >4 )
+
+
+            return true;
+
+        return false;
+
+    }
+    /*private boolean validateInput() {
+
+      if( taskTitle.getText().toString().length() >4 &&
+              taskDescription.getText().toString().length()>4 &&
+
+              taskTitle.getText().toString().matches("[a-zA-Z]+( [a-zA-Z]+)*$")
+              && taskDescription.getText().toString().matches("[a-zA-Z]+( [a-zA-Z]+)*$")
 
               )
         return true;
 
         return false;
 
-    }
+    }*/
 
     class Date1{
         public String day,month;

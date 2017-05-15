@@ -40,12 +40,6 @@ public class MyReceiver extends WakefulBroadcastReceiver {
         }else
         {
 
-            Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            if (alarmUri == null) {
-                alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            }
-            Ringtone ringtone = RingtoneManager.getRingtone(context, alarmUri);
-            ringtone.play();
 
             ComponentName comp = new ComponentName(context.getPackageName(),
                     NotificationService.class.getName());

@@ -178,7 +178,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(R.id.action_add == item.getItemId())
             startActivity(new Intent(MainActivity.this,CreateTask.class));
-
+        else if(R.id.action_favorite == item.getItemId())
+            startActivity(new Intent(MainActivity.this,About.class));
         return true;
     }
 

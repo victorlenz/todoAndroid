@@ -169,8 +169,11 @@ public class ToDoToday extends AppCompatActivity {
             startActivity(new Intent(ToDoToday.this, CreateTask.class));
             finish();
         }
-
+        else if(R.id.action_favorite == item.getItemId())
+            startActivity(new Intent(ToDoToday.this,About.class));
         return true;
+
+
     }
 
 }

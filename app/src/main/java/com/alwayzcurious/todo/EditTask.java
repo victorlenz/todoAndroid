@@ -43,6 +43,7 @@ public class EditTask extends AppCompatActivity implements View.OnClickListener{
     SimpleDateFormat simpleDateFormat;
     Task task1;
     DatabaseManager databaseManager;
+    AlertDialog.Builder dialogue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +89,16 @@ public class EditTask extends AppCompatActivity implements View.OnClickListener{
         taskCalendar = Calendar.getInstance();
         taskCalendar.set(task1.getDateYear(),task1.getDateMonth(),task1.getDateDay(),task1.getTimeHr(),task1.getTimeMin(),task1.getTimeSec());
         tempTaskCalendar = (Calendar) taskCalendar.clone();
+         dialogue= new AlertDialog.Builder(EditTask.this);
+        dialogue.setMessage("Title & Description can't be less than 4 character and can't contain special character");
+        dialogue.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
 
-
+            }
+        });
+        mTvDate.setText(String.format(Locale.ENGLISH, "%s, %s %02d", getDay(taskCalendar.get(Calendar.DAY_OF_WEEK)), getMonth(task1.getDateMonth()), task1.getDateYear()));
+        mTvTime.setText(String.format(Locale.ENGLISH,"%02d :%02d",task1.getTimeHr(),task1.getTimeMin()));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -171,14 +180,7 @@ public class EditTask extends AppCompatActivity implements View.OnClickListener{
 
                 if (!validateInput())
                 {
-                    AlertDialog.Builder dialogue= new AlertDialog.Builder(EditTask.this);
-                    dialogue.setMessage("Title & Description can't be less than 4 character and can't contain special character");
-                    dialogue.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
 
-                        }
-                    });
                     dialogue.show();
                     return;
                 }
@@ -186,6 +188,13 @@ public class EditTask extends AppCompatActivity implements View.OnClickListener{
                 if(mTvLocation.getText().length() ==0)
                 {
                     mTvLocation.setText("Not Available");
+                }else{
+                    if(!mTvLocation.getText().toString().matches("[a-zA-Z]+( [a-zA-Z]+)*$"))
+                    {
+                        dialogue.show();
+                        return;
+                    }
+
                 }
 
                 if(preTaskRepFreq.getText().toString().length() ==0 )
@@ -283,21 +292,32 @@ public class EditTask extends AppCompatActivity implements View.OnClickListener{
 
 
     }
-
     private boolean validateInput() {
 
-        if( taskTitle.getText().toString().length() >3 &&
-                taskDescription.getText().toString().length()>3 &&
+        if( taskTitle.getText().toString().length() <15 &&
+                taskDescription.getText().toString().length() <25 &&
 
-                taskTitle.getText().toString().matches("^[a-zA-Z]{4,}$")
-                && taskDescription.getText().toString().matches("^[a-zA-Z]{4,}$")
+                taskTitle.getText().toString().matches("^[a-zA-Z]+( [a-zA-Z]+)*$")
+                && taskDescription.getText().toString().matches("^[a-zA-Z]+( [a-zA-Z]+)*")
+                &&
+                taskTitle.getText().toString().length() >4 &&
+                taskDescription.getText().toString().length() >4 )
 
-                )
+
             return true;
 
         return false;
 
     }
+    /*private boolean validateInput() {
+
+        return taskTitle.getText().toString().length() > 4 &&
+                taskDescription.getText().toString().length() > 4 &&
+                //"^[a-zA-Z]{4,}$"
+                taskTitle.getText().toString().matches("[a-zA-Z]+( [a-zA-Z]+)*$")
+                && taskDescription.getText().toString().matches("[a-zA-Z]+( [a-zA-Z]+)*$");
+
+    }*/
     class Date1{
         public String day,month;
     }
